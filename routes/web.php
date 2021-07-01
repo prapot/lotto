@@ -5,6 +5,7 @@ use App\Http\Controllers\backend\AdminController;
 use App\Http\Controllers\backend\ProfileController;
 use App\Http\Controllers\backend\UploadImageController;
 use App\Http\Controllers\backend\HostController;
+use App\Http\Controllers\backend\AgentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +19,7 @@ use App\Http\Controllers\backend\HostController;
 */
 
 Route::get('/', function () {
+    abort('404');
     return view('welcome');
 });
 
@@ -25,7 +27,9 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Auth::routes(['register' => false]);
+Route::get('/register', function () {
+    abort('404');
+});
 
 Route::prefix('backends')->name('backends.')->middleware(['auth','admin'])->group(function () {
     Route::get('/',function(){
@@ -44,12 +48,24 @@ Route::prefix('backends')->name('backends.')->middleware(['auth','admin'])->grou
         Route::put('/{id}', [AdminController::class, 'update'])->name('update');
         Route::post('/destroy', [AdminController::class, 'destroy'])->name('destroy');
     });
+
+
+    Route::prefix('agent')->name('agent.')->group(function () {
+        Route::get('/create', [AgentController::class, 'create'])->name('create');
+        Route::get('/', [AgentController::class, 'index'])->name('index');
+        Route::post('/', [AgentController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [AgentController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [AgentController::class, 'update'])->name('update');
+        Route::post('/destroy', [AgentController::class, 'destroy'])->name('destroy');
+    });
     
     Route::prefix('host')->name('host.')->group(function () {
         Route::get('/', [HostController::class, 'host'])->name('host');
+        Route::post('/', [HostController::class, 'store'])->name('store');
+        Route::post('/destroy', [HostController::class, 'destroy'])->name('destroy');
     });
 
-
+    
     Route::prefix('profile')->name('profile.')->group(function () {
         Route::get('/{id}/edit', [ProfileController::class, 'edit'])->name('edit');
         Route::put('/{id}', [ProfileController::class, 'update'])->name('update');

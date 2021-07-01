@@ -25,10 +25,12 @@ class FirstAdminSeed extends Seeder
                 'status' => '1'
             ],
         ];
-        User::Truncate();
-        foreach($datas as $data){
-          $admin = User::create($data);
-          $admin->assignRole([$data['role']]);
+        $checkAdmin = User::where('role' , 'super-admin')->first();
+        if(empty($checkAdmin)){
+            foreach($datas as $data){
+                $admin = User::create($data);
+                $admin->assignRole([$data['role']]);
+              }
         }
 
     }

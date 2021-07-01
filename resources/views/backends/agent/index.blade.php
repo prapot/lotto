@@ -1,18 +1,18 @@
 @extends('backends.layouts.master')
-@section('page_title', "Admin")
+@section('page_title', "Agent")
 @section('content')
 
-<div class="card" id="admin-page">
+<div class="card" id="agent-page">
 
   <div class="card-header">
     <div class="row">
       <div class="col-5 col-md-5 d-flex justify-content-md-start align-items-md-center">
-        <h3 class="my-1 text-center text-md-left">ผู้ดูแลระบบ</h3>
+        <h3 class="my-1 text-center text-md-left">Agent</h3>
       </div>
       <div class="col-7 col-md-7 d-flex flex-wrap justify-content-end align-items-center">
-        <a href="{{route('backends.admin.create')}}" class="btn btn-mobile-size btn-primary my-1 ml-2">
+        <a href="{{route('backends.agent.create')}}" class="btn btn-mobile-size btn-primary my-1 ml-2">
           <i class="fa fa-plus"></i>
-          เพิ่มผู้ดูแลระบบ
+          เพิ่ม Agent
         </a>
       </div>
     </div>
@@ -46,31 +46,27 @@
           </tr>
         </thead>
         <tbody>
-          @foreach($admins as $admin)
+          @foreach($agents as $agent)
           <tr>
             <td>
-              {{$admin->name}}
+              {{$agent->name}}
             </td>
             <td>
-              {{$admin->email}}
+              {{$agent->email}}
             </td>
             <td>
-              {{$admin->created_at}}
+              {{$agent->created_at}}
             </td>
             <td>
-              <button class="btn btn-info text-white" type="button" @click="editData({{$admin->id}})">แก้ไข</button>
-              @if($admin->id != 1)
-              @role('super-admin')
-              <button class="btn btn-danger  text-white" type="button" @click="deleteData({{$admin->id}})">ลบ</button>
-              @endrole
-              @endif
+              <button class="btn btn-info text-white" type="button" @click="editData({{$agent->id}})">ดูข้อมูล</button>
+              <button class="btn btn-danger  text-white" type="button" @click="deleteData({{$agent->id}})">ลบ</button>
             </td>
           </tr>
           @endforeach
         </tbody>
       </table>
     </div>
-    @include('backends.paginator', ['paginator' => $admins])
+    @include('backends.paginator', ['paginator' => $agents])
   </div>
   <!-- /.card-body -->
 

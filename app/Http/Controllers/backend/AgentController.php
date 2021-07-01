@@ -4,6 +4,7 @@ namespace App\Http\Controllers\backend;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Host;
 use URL;
 use Redirect;
 use Auth;
@@ -11,7 +12,7 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Validation\Rule;
 
-class AdminController extends Controller
+class AgentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -26,15 +27,15 @@ class AdminController extends Controller
     public function index(Request $request)
     {
         $q = $request->q;
-        $admins = User::where(function ($query) use ($q) {
+        $agents = User::where(function ($query) use ($q) {
             $keyword = '%' . $q . '%';
             $query->orWhere('name', 'like', $keyword);
             $query->orWhere('email', 'like', $keyword);
-        })->where('role','super-admin')->paginate($this->item_per_page);
+        })->where('role','agent')->paginate($this->item_per_page);
         $datas = [
-            'admins' => $admins
+            'agents' => $agents
         ];
-        return view('backends.admin.index',$datas)->withPageItems($this->item_per_page);
+        return view('backends.agent.index',$datas)->withPageItems($this->item_per_page);
     }
 
     /**
@@ -44,11 +45,11 @@ class AdminController extends Controller
      */
     public function create()
     {
-        $roles = Role::where('name','super-admin')->get();
+        $roles = Role::where('name','agent')->get();
         $datas = [
             'roles' => $roles
         ];
-        return view('backends.admin.create',$datas);
+        return view('backends.agent.create',$datas);
     }
 
     /**
@@ -70,19 +71,19 @@ class AdminController extends Controller
         $data['admin_id'] = Auth::User()->id;
         $data['status'] = 1;
 
-        $admin = new User;
-        $admin->fill($data);
-        $admin->save();
+        $agent = new User;
+        $agent->fill($data);
+        $agent->save();
 
-        $admin->assignRole($request->role);
+        $agent->assignRole($request->role);
 
 
         session()->flash('error_message', [
             'type' => 'success',
-            'message' => 'Admin has been created.'
+            'message' => 'Agent has been created.'
         ]);
 
-        return redirect()->route('backends.admin.index');
+        return redirect()->route('backends.agent.index');
     }
 
     /**
@@ -104,13 +105,15 @@ class AdminController extends Controller
      */
     public function edit($id)
     {
-        $roles = Role::where('name','super-admin')->get();
-        $admin = User::findOrFail($id);
+        $roles = Role::where('name','agent')->get();
+        $agent = User::findOrFail($id);
+        $hosts = Host::where('user_id',$agent->id)->get();
         $datas = [
-            'admin' => $admin,
-            'roles' => $roles
+            'agent' => $agent,
+            'roles' => $roles,
+            'hosts' => $hosts
         ];
-        return view('backends.admin.edit',$datas);
+        return view('backends.agent.edit',$datas);
     }
 
     /**
@@ -138,18 +141,18 @@ class AdminController extends Controller
         $data['admin_id'] = Auth::User()->id;
         $data['status'] = 1;
 
-        $admin = User::findOrFail($id);
-        $admin->removeRole($admin->role);
-        $admin->fill($data);
-        $admin->save();
-        $admin->assignRole($request->role);
+        $agent = User::findOrFail($id);
+        $agent->removeRole($agent->role);
+        $agent->fill($data);
+        $agent->save();
+        $agent->assignRole($request->role);
 
         session()->flash('error_message', [
             'type' => 'success',
-            'message' => 'Admin has been updated.'
+            'message' => 'Agent has been updated.'
         ]);
 
-        return redirect()->route('backends.admin.index');
+        return redirect()->route('backends.agent.index');
     }
 
     /**
@@ -160,9 +163,9 @@ class AdminController extends Controller
      */
      public function destroy(Request $request)
      {
-         $admin = User::findOrFail($request->id);
-         $admin->admin_id = Auth::User()->id;
-         $admin->save();
-         $admin->delete();
+         $agent = User::findOrFail($request->id);
+         $agent->admin_id = Auth::User()->id;
+         $agent->save();
+         $agent->delete();
      }
 }

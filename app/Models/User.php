@@ -11,7 +11,7 @@ class User extends Authenticatable
 {
     use Notifiable;
     use HasRoles;
-    const ADMIN_TYPE = ['super-admin','admin'];
+    const ADMIN_TYPE = ['super-admin','agent'];
 
     /**
      * The attributes that are mass assignable.

@@ -5,7 +5,7 @@
     </div>
     <ul class="c-sidebar-nav">
 
-        @hasanyrole('admin')
+        @hasanyrole('agent')
         <li class="c-sidebar-nav-item">
             <a class="c-sidebar-nav-link {{ Request::routeIs('backends.host') ? 'c-active' : '' }}" href="{{ route('backends.host.host') }}">
                 <i class="cil-user c-sidebar-nav-icon"></i>
@@ -15,6 +15,12 @@
         @endrole
 
         @hasanyrole('super-admin')
+            <li class="c-sidebar-nav-item">
+                <a class="c-sidebar-nav-link {{ Request::routeIs('backends.agent') ? 'c-active' : '' }}" href="{{ route('backends.agent.index') }}">
+                    <i class="cil-user c-sidebar-nav-icon"></i>
+                    Agent
+                </a>
+            </li>
             <li class="c-sidebar-nav-item">
                 <a class="c-sidebar-nav-link {{ Request::routeIs('backends.admin') ? 'c-active' : '' }}" href="{{ route('backends.admin.index') }}">
                     <i class="cil-user c-sidebar-nav-icon"></i>
