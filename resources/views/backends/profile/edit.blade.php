@@ -1,0 +1,47 @@
+@extends('backends.layouts.master')
+@section('page_title', "Edit Admin")
+@section('content')
+<form id="admin-edit" action="{{route('backends.profile.update',['id' => $admin->id])}}"  method="post" class="needs-validation" novalidate enctype="multipart/form-data">
+    @csrf
+    @method('put')
+    <div class="card-header py-3">
+        <div class="row">
+            <div class="col-5 col-md-5 d-flex justify-content-md-start align-items-md-center">
+                <h1 class="my-1 text-center text-md-left">แก้ไขข้อมูลส่วนตัว</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+          <div class="card">
+              <div class="card-body">
+                  <div class="form-horizontal">
+                      <div class="form-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    @include('backends.profile.info')
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12 col-sm-3 offset-sm-3 col-md-2 offset-md-5">
+                            <button type="submit" class="btn btn-primary btn-lg btn-block">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+@endsection('content')

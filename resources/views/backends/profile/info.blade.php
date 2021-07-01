@@ -1,0 +1,58 @@
+@include('backends.alert')
+<div class="form-group row">
+    <label for="name" class="col-md-4 col-form-label text-md-right">ชิ่อ - นามสกุล <span class="text-danger">*</span></label>
+
+    <div class="col-md-4">
+        <input id="name" type="text" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" name="name" value="{{ @$admin->name ? @$admin->name : old('name') }}" required autofocus>
+        @include('backends.error-message' ,['error_message' => $errors->first('name')])
+    </div>
+</div>
+
+<div class="form-group row">
+    <label for="email" class="col-md-4 col-form-label text-md-right">อีเมล <span class="text-danger">*</span></label>
+
+    <div class="col-md-4">
+        <input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }} " name="email" value="{{ @$admin->email ? @$admin->email : old('email') }}" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" @if(@$admin->id) readonly @endif>
+        @include('backends.error-message' ,['error_message' => $errors->first('email') ])
+
+    </div>
+</div>
+
+<div class="form-group row">
+    <label for="role" class="col-md-4 col-form-label text-md-right">หน้าที่ <span class="text-danger">*</span></label>
+
+    <div class="col-md-4">
+        <select id="role" type="role" class="form-control{{ $errors->has('role') ? ' is-invalid' : '' }}" name="role" value="{{ @$admin->role ? @$admin->role : old('role') }}" required style="text-transform:capitalize;">
+            <option value="" disabled selected> เลือกหน้าที่ </option>
+            @foreach($roles as $role)
+                @if('super-admin' != $role->name)
+                    <option value="{{ $role->name }}"  style="text-transform:capitalize;" @if(@$admin->role == $role->name) selected @endif >{{ $role->name }}</option>
+                @else
+                    @if(Auth::User()->role == 'super-admin')
+                        <option value="{{ $role->name }}"  style="text-transform:capitalize;" @if(@$admin->role == $role->name) selected @endif >{{ $role->name }}</option>
+                    @endif
+                @endif
+            @endforeach
+        </select>
+        @include('backends.error-message' ,['error_message' => $errors->first('role')])
+
+    </div>
+</div>
+<div class="form-group row">
+    <label for="password" class="col-md-4 col-form-label text-md-right">รหัสผ่าน <span class="text-danger">*</span></label>
+
+    <div class="col-md-4">
+        <input id="password" type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" name="password">
+        @include('backends.error-message' ,['error_message' =>  $errors->first('password') ])
+
+    </div>
+</div>
+
+<div class="form-group row">
+    <label for="password-confirm" class="col-md-4 col-form-label text-md-right">ยืนยันรหัสผ่าน <span class="text-danger">*</span></label>
+
+    <div class="col-md-4">
+        <input id="password-confirm" type="password" class="form-control" name="password_confirmation">
+        @include('backends.error-message' ,['error_message' => 'กรุณายืนยันรหัสผ่าน'])
+    </div>
+</div>
