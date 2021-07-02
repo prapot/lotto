@@ -45,4 +45,8 @@ class User extends Authenticatable
     public function isAdmin(){
         return in_array($this->role, self::ADMIN_TYPE);
     }
+
+    public function host(){
+        return $this->hasMany('App\Models\Host', 'user_id', 'id');
+    }
 }

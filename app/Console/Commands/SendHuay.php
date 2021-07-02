@@ -4,6 +4,8 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Phattarachai\LineNotify\Line;
+use App\Models\User;
+use App\Services\ApiBase;
 
 class SendHuay extends Command
 {
@@ -19,7 +21,7 @@ class SendHuay extends Command
      *
      * @var string
      */
-    protected $description = 'ส่งข้อความทุก ๆ 15 นาที';
+    protected $description = 'ส่งข้อความทุก ๆ 10 นาที';
 
     /**
      * Create a new command instance.
@@ -29,6 +31,7 @@ class SendHuay extends Command
     public function __construct()
     {
         parent::__construct();
+        $this->api_base = new ApiBase();
     }
 
     /**
@@ -38,12 +41,31 @@ class SendHuay extends Command
      */
     public function handle()
     {
-        $array = [ 'ehQRZfFjgY9wjGe5Ho3aV9QdN67RoEeKDOWkNcScdgS','c8ohBpGq2beJRdeZpNGodPzj4bgRkifz7cn631XRQrr' ];
-        foreach($array as $key => $arr){
-            $line = new Line($arr);
-            $line->send('message'.$key);
+
+        $soidow = $this->api_base->soidown();
+        $data = [];
+        foreach($soidow as $results){
+            if($results->status == 'complete'){
+                $result_value = [];
+                foreach($results->results as $value){
+                    $result_value[$value->result_key] = $value->result_value;
+                }
+                $data = [
+                    'readable_edition' => $results->readable_edition,
+                    'result_value' => $result_value
+                ];
+            }
         }
-        echo 'success';
-        // return 0;
+        $message = $data['readable_edition'] .' สองตัวล่าง :'.$data['result_value']['2under'].' สามตัวบน :'.$data['result_value']['3upper'];
+        $agents = User::where('role','agent')->get();
+        foreach($agents as $agent){
+            if(!empty($agent->host)){
+                foreach($agent->host as $host){
+                    $token = $host->line_token;
+                    $line = new Line($token);
+                    $line->send($message);
+                }
+            }
+        }
     }
 }

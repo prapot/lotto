@@ -46,12 +46,10 @@
               </form>
               </div>
             </div>
-            <div class="card text-white bg-primary py-5 d-md-down-none" style="width:44%">
-              <div class="card-body text-center">
+            <div class="card text-white bg-danger py-5 d-md-down-none page-login" style="width:44%">
+              <div class="card-body text-center d-flex align-items-center justify-content-center">
                 <div>
-                  <h2>Sign up</h2>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                  <button class="btn btn-lg btn-outline-light mt-3" type="button">Register Now!</button>
+                  <img src="{{ asset('images/logo.svg') }}" width="250">
                 </div>
               </div>
             </div>
