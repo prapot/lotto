@@ -21,7 +21,16 @@
         @include('backends.layouts.footer')
     </div>
 </body>
+  <script>
+    function chkNumber(ele)
+    {
+      var vchar = String.fromCharCode(event.keyCode);
+      if ((vchar<'0' || vchar>'9')) return false;
+      ele.onKeyPress=vchar;
+    }
+  </script>
   <script type="text/javascript">var baseUrl = '{{ @url('/') }}' </script>
+ 
   @yield('js')
   <script src="{{ asset(mix('backend/js/app.js')) }}" defer></script>
 </html>

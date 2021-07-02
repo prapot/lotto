@@ -4,6 +4,8 @@ namespace App\Http\Controllers\backend;
 
 use Illuminate\Http\Request;
 use App\Models\Host;
+use App\Models\Formula;
+use App\Models\User;
 use Auth;
 
 class HostController extends Controller
@@ -17,9 +19,11 @@ class HostController extends Controller
 
       $user = Auth::User();
       $hosts = Host::where('user_id',$user->id)->get();
+      $formulas = Formula::where('user_id',$user->id)->orderby('value','asc')->get();
 
       $datas = [
-        'hosts' => $hosts
+        'hosts' => $hosts,
+        'formulas' => $formulas,
       ];
 
       return view('backends.host.index',$datas);
@@ -33,7 +37,7 @@ class HostController extends Controller
       $host = new Host;
       $host->fill($datas);
       $host->save();
-  
+
     }
     
     public function destroy(Request $request){
@@ -43,5 +47,30 @@ class HostController extends Controller
       $host->delete();
   
     }
+
+    public function formula(Request $request){
+
+      $datas = $request->all();
+      $datas['user_id'] = Auth::User()->id;
+      $formula = Formula::find($datas['id']);
+      if(empty($formula)){
+        $formula = new Formula;
+      }
+      $formula->fill($datas);
+      $formula->save();
+
+      return $formula;
+    }
+
+
+    public function formulaDestroy(Request $request){
+      
+      $datas = $request->all();
+      $formula = Formula::findOrFail($datas['id']);
+      $formula->delete();
+  
+    }
+
+    
     
 }

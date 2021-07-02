@@ -1,34 +1,16 @@
 <template>
   <div class="mb-3">
     <div>
-      <div class="row m-auto">
-          <ul class="list-unstyled w-100">
-            <li v-for="(host, index) in tempHosts"  class="ui-state-default m-2 position" :key="index" >
-              <div>
-                <div class="row">
-                  <div class="col-md-3">
-                    <div class="input-group mb-3">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon2">ชื่อห้อง</span>
-                      </div>
-                      <input type="text" class="form-control" aria-describedby="basic-addon2" :value="host.name" disabled>
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="input-group mb-3">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon2">โทเคน Line</span>
-                      </div>
-                      <input type="text" class="form-control" aria-describedby="basic-addon2" :value="host.line_token" disabled>
-                    </div>
-                  </div>
-                  <div class="col-md-3" v-if="close_input == 'false'">
-                    <img src="/images/remove.png" width="20"  @click="beforeRemove(index)">
-                  </div>
-                </div>
+      <div class="row">
+          <div class="col-sm-6" v-for="(host, index) in tempHosts" :key="index">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">{{host.name}}</h5>
+                <p class="card-text">token : {{host.line_token}}</p>
+                <img v-if="close_input == 'false'" src="/images/remove.png" width="20" class="position-absolute pointer" style="top: 10px;right: 10px;" @click="beforeRemove(index)">
               </div>
-            </li>
-          </ul>
+            </div>
+        </div>
       </div>
       
       <div class="form-group row" v-if="close_input == 'false'">

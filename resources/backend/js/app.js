@@ -23,6 +23,7 @@ require('sweetalert');
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('host', require('./components/Host.vue').default);
+Vue.component('formula', require('./components/Formula.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

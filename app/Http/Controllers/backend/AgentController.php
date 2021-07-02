@@ -5,6 +5,7 @@ namespace App\Http\Controllers\backend;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Host;
+use App\Models\Formula;
 use URL;
 use Redirect;
 use Auth;
@@ -108,10 +109,12 @@ class AgentController extends Controller
         $roles = Role::where('name','agent')->get();
         $agent = User::findOrFail($id);
         $hosts = Host::where('user_id',$agent->id)->get();
+        $formulas = Formula::where('user_id',$agent->id)->get();
         $datas = [
             'agent' => $agent,
             'roles' => $roles,
-            'hosts' => $hosts
+            'hosts' => $hosts,
+            'formulas' => $formulas
         ];
         return view('backends.agent.edit',$datas);
     }

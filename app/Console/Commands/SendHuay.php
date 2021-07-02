@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Phattarachai\LineNotify\Line;
 use App\Models\User;
 use App\Services\ApiBase;
+use App\Models\Formula;
 
 class SendHuay extends Command
 {
@@ -56,14 +57,30 @@ class SendHuay extends Command
                 ];
             }
         }
-        $message = $data['readable_edition'] .' สองตัวล่าง :'.$data['result_value']['2under'].' สามตัวบน :'.$data['result_value']['3upper'];
+        // $message = $data['readable_edition'] .' สองตัวล่าง :'.$data['result_value']['2under'].' สามตัวบน :'.$data['result_value']['3upper'];
         $agents = User::where('role','agent')->get();
         foreach($agents as $agent){
             if(!empty($agent->host)){
                 foreach($agent->host as $host){
-                    $token = $host->line_token;
-                    $line = new Line($token);
-                    $line->send($message);
+                    $message = '';
+                    $message1 = '';
+                    $message2 = '';
+                    $under2 = $data['result_value']['2under'];
+                    $upper3 = $data['result_value']['3upper'];
+                    $formulaUnder2 = Formula::where('user_id',$host->user_id)->where('value',$under2)->inRandomOrder()->first();
+                    $formulaUpper3 = Formula::where('user_id',$host->user_id)->where('value',$upper3)->inRandomOrder()->first();
+                    if($formulaUnder2){
+                        $message1 = 'สองตัวล่าง : '.$under2.' สูตร : '.$formulaUnder2->result;
+                    }
+                    if($formulaUpper3){
+                        $message2 = 'สามตัวบน : '.$upper3.' สูตร : '.$formulaUpper3->result;
+                    }
+                    $message = $message1 . $message2;
+                    if($message != ''){
+                        $token = $host->line_token;
+                        $line = new Line($token);
+                        $line->send($message);
+                    }
                 }
             }
         }

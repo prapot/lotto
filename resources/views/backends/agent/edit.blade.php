@@ -53,7 +53,6 @@
             </div>
         </div>
     </div>
-
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -66,6 +65,33 @@
                                         oldhosts="{{ json_encode($hosts) }}"
                                         close_input="true"
                                     ></host>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-header py-3">
+        <div class="row">
+            <div class="col-5 col-md-5 d-flex justify-content-md-start align-items-md-center">
+                <h1 class="my-1 text-center text-md-left">สูตร</h1>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="form-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <formula
+                                        oldformulas="{{ json_encode($formulas) }}"
+                                        close_input="true"
+                                    ></formula>
                                 </div>
                             </div>
                         </div>
