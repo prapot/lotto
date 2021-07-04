@@ -8,9 +8,16 @@
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">{{formula.title}}</h5>
-              <p class="card-text">เลขที่ออกล่าสุด : {{formula.value}}</p>
+              <p class="card-text">สูตร : <span v-if="formula.type == 3">สามตัวบน</span><span v-if="formula.type == 2">สองตัวล่าง</span></p>
+              <p class="card-text">เลขที่ออกล่าสุด : 
+                <span v-for="(dataValue , data_index ) in formula.values" :key="data_index">
+                {{dataValue.value}}
+                <span v-if="data_index != Object.keys(formula.values).length - 1">, </span>
+                </span>
+              </p>
+              <p class="card-text" v-if="formula.condition != 0">ขั้นสูง : เลขที่เลือกไว้ติดกัน มากกว่า {{formula.round}} รอบ ใน {{formula.last_round}} รอบล่าสุด</p>
               <p class="card-text">สูตรที่แสดง : {{formula.result}}</p>
-              <img v-if="close_input == 'false'" src="/images/edit.png" width="20" class="position-absolute pointer" style="top: 10px;right: 40px;" @click="beforeEdit(index,formula.id)">
+              <!-- <img v-if="close_input == 'false'" src="/images/edit.png" width="20" class="position-absolute pointer" style="top: 10px;right: 40px;" @click="beforeEdit(index,formula.id)"> -->
               <img v-if="close_input == 'false'" src="/images/remove.png" width="20" class="position-absolute pointer" style="top: 10px;right: 10px;" @click="beforeRemove(index)">
             </div>
           </div>
@@ -35,16 +42,63 @@
                   <input type="text" class="form-control" id="title" v-model="title" placeholder="ชื่อสูตร">
                 </div>
               </div>
+
               <div class="form-group row">
-                <label for="value" class="col-sm-2 col-form-label">ผลที่ออก</label>
-                <div class="col-sm-10">
-                  <input type="text" class="form-control" id="value"  OnKeyPress="return chkNumber(this)" v-model="value" placeholder="ผลที่ออก">
+                <label class="col-sm-2 col-form-label">สูตรเช็ค</label>
+                <div class="col-sm-10  d-flex align-items-center">
+                  <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="3upper" name="type" class="custom-control-input" value="3" v-model="type">
+                    <label class="custom-control-label" for="3upper">สามตัวบน</label>
+                  </div>
+                  <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="2under" name="type" class="custom-control-input" value="2" v-model="type">
+                    <label class="custom-control-label" for="2under">สองตัวล่าง</label>
+                  </div>
                 </div>
               </div>
-              <div class="form-group row">
-                <label for="result" class="col-sm-2 col-form-label">ผลลัพธ์ที่แสดง</label>
+
+              <div class="form-group row" v-if="type">
+                <label for="value" class="col-sm-2 col-form-label">เลขที่เลือก</label>
+                <div class="col-sm-10 row">
+                  <div class="col-sm-2" v-for="(value, index_value) in values" :key="index_value" :class="(values.length > 6)?'mt-3':''">
+                    <input type="text" class="form-control value"  OnKeyPress="return chkNumber(this)" v-model="value.value" placeholder="ผลที่ออก">
+                  </div>
+                  <div class="col-sm-2 d-flex align-items-center" :class="(values.length > 5)?'mt-3':''">
+                    <img v-if="close_input == 'false'" src="/images/plus.png" class="pointer" width="20" @click="addValue()">
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group row" v-if="type">
+                <label class="col-sm-2 col-form-label">เงื่อนไขขั้นสูง</label>
+                <div class="col-sm-10 d-flex align-items-center">
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="checkbox" value="0" v-model="condition">
+                    <label class="custom-control-label" for="checkbox">เลขที่เลือกไว้ติดกัน มากกว่า</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group row" v-if="condition">
+                <label class="col-sm-2 col-form-label">เลขที่เลือกไว้ติดกัน มากกว่า</label>
+                <div class="col-sm-3">
+                  <select class="form-control" v-model="round">
+                    <option disabled value="">เลือกรอบที่พบ</option>
+                    <option v-for="(round,index_round) in rounds" :key="index_round" :value="index_round + 1">{{index_round+1}}</option>
+                  </select>
+                </div>
+                <div class="col-sm-4">
+                  <select class="form-control" v-model="last_round">
+                    <option disabled value="">เลือกในรอบล่าสุด</option>
+                    <option v-for="(last_round,index_lastround) in last_rounds" :key="index_lastround" :value="index_lastround + 1">{{index_lastround+1}}</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group row" v-if="type">
+                <label for="result" class="col-sm-2 col-form-label">ข้อความที่แสดง</label>
                 <div class="col-sm-10">
-                  <input type="text" class="form-control" id="result" v-model="result" placeholder="ผลลัพธ์ที่แสดง">
+                  <input type="text" class="form-control" id="result" v-model="result" placeholder="ข้อความที่แสดง">
                 </div>
               </div>
             </form>
@@ -68,7 +122,13 @@ export default {
         dataIndex:'',
         id:'',
         title:'',
-        value:'',
+        type:'',
+        condition:0,
+        rounds:10,
+        last_rounds:10,
+        round:0,
+        last_round:0,
+        values:[],
         result:'',
         formulaDatas:[]
       
@@ -76,43 +136,55 @@ export default {
   },
   mounted(){
     this.formulaDatas = JSON.parse(this.oldformulas)
+    this.values.push({ value: '' });
   },
   computed:{
   },
   methods: {
+      addValue: function () {
+        this.values.push({ value: '' });
+      },
       submitFormula(){
           if(this.title.length == 0){
               $('#title').addClass('border border-danger')
           }
-          if(this.value.length == 0){
-              $('#value').addClass('border border-danger')
+          if(this.values.length == 0){
+              $('.value').addClass('border border-danger')
           }
           if(this.result.length == 0){
               $('#result').addClass('border border-danger')
           }
-          if(this.title.length > 0 && this.value.length > 0  && this.result.length > 0){
+          if(this.title.length > 0 && this.values.length > 0  && this.result.length > 0){
               let self = this
               $('#title').removeClass('border border-danger')
-              $('#value').removeClass('border border-danger')
+              $('.value').removeClass('border border-danger')
               $('#result').removeClass('border border-danger')
               axios.post(baseUrl+'/backends/host/formula', {
                   id:this.id,
                   title: this.title,
-                  value: this.value,
+                  type: this.type,
+                  condition:this.condition,
+                  round:this.round,
+                  last_round:this.last_round,
+                  values: this.values,
                   result: this.result,
               })
               .then(function (response) {
                   let message = 'เพิมสูตรสำเร็จ';
                   if(self.id){
                     message = 'แก้ไขสูตรสำเร็จ'
-                    self.formulaDatas[self.dataIndex] = ({"id" : response.data.id,"title":response.data.title,"value":response.data.value,"result":response.data.result})
+                    self.formulaDatas[self.dataIndex] = ({"id" : response.data.id,"title":response.data.title,"condition":response.data.condition,"round":response.data.round,"last_round":response.data.last_round,"values":response.data.values,"result":response.data.result})
                   }else{
-                    self.formulaDatas.push({"id" : response.data.id ,"title":response.data.title,"value":response.data.value,"result":response.data.result})
+                    self.formulaDatas.push({"id" : response.data.id ,"title":response.data.title,"type":response.data.type,"condition":response.data.condition,"round":response.data.round,"last_round":response.data.last_round,"values":response.data.values,"result":response.data.result})
                   }
                   self.dataIndex = ''
                   self.id = ''
                   self.title =''
-                  self.value = ''
+                  self.type =''
+                  self.condition =0
+                  self.round =0
+                  self.last_round =0
+                  self.values = [{'value':''}]
                   self.result = ''
                   swal({
                     'title' : "Success",

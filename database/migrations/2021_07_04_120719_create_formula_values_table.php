@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFormulasTable extends Migration
+class CreateFormulaValuesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,19 +13,14 @@ class CreateFormulasTable extends Migration
      */
     public function up()
     {
-        Schema::create('formulas', function (Blueprint $table) {
+        Schema::create('formula_values', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->string('title');
-            $table->string('type');
-            $table->string('condition');
-            $table->integer('round');
-            $table->integer('last_round');
-            $table->string('result');
+            $table->unsignedBigInteger('formula_id');
+            $table->integer('value');
             $table->timestamps();
-            $table->foreign('user_id')
+            $table->foreign('formula_id')
                 ->references('id')
-                ->on('users')
+                ->on('formulas')
                 ->onDelete('cascade');
         });
     }
@@ -37,6 +32,6 @@ class CreateFormulasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('formulas');
+        Schema::dropIfExists('formula_values');
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\backend;
 use Illuminate\Http\Request;
 use App\Models\Host;
 use App\Models\Formula;
+use App\Models\FormulaValue;
 use App\Models\User;
 use Auth;
 
@@ -16,11 +17,10 @@ class HostController extends Controller
     }
 
     public function host(){
-
+      
       $user = Auth::User();
       $hosts = Host::where('user_id',$user->id)->get();
-      $formulas = Formula::where('user_id',$user->id)->orderby('value','asc')->get();
-
+      $formulas = Formula::where('user_id',$user->id)->with('values')->get();
       $datas = [
         'hosts' => $hosts,
         'formulas' => $formulas,
@@ -59,7 +59,33 @@ class HostController extends Controller
       $formula->fill($datas);
       $formula->save();
 
-      return $formula;
+      $dataFormula = [];
+
+      if($datas['values']){
+        foreach($datas['values'] as $value){
+            $formula_value = new FormulaValue;
+            $formula_value->formula_id = $formula->id;
+            $formula_value->value = $value['value'];
+            $formula_value->save();
+
+            $dataFormula[] = [
+              'value' => $value['value']
+            ];
+        }
+      }
+
+      $formula_index = [
+        'id' => $formula->id,
+        'title' => $formula->title,
+        'type' => $formula->type,
+        'condition' => $formula->condition,
+        'round' => $formula->round,
+        'last_round' => $formula->last_round,
+        'values' => $dataFormula,
+        'result' => $formula->result,
+      ];
+
+      return $formula_index;
     }
 
 

@@ -10,7 +10,7 @@ class ApiBase
   }
 
   public function soidown(){
-    $res = $this->client->request('GET', 'https://staging.arawanbet.com/api/lotto/reward/soidown');
+    $res = $this->client->request('GET', 'https://staging.arawanbet.com/api/lotto/rewardsoidown');
     $result = json_decode($res->getBody());
     return $result;
   }

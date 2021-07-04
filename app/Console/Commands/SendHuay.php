@@ -7,6 +7,7 @@ use Phattarachai\LineNotify\Line;
 use App\Models\User;
 use App\Services\ApiBase;
 use App\Models\Formula;
+use App\Models\FormulaValue;
 
 class SendHuay extends Command
 {
@@ -45,7 +46,9 @@ class SendHuay extends Command
 
         $soidow = $this->api_base->soidown();
         $data = [];
-        foreach($soidow as $results){
+        $message_value = '';
+        $new_line = '';
+        foreach(array_reverse($soidow) as $key => $results){
             if($results->status == 'complete'){
                 $result_value = [];
                 foreach($results->results as $value){
@@ -55,6 +58,13 @@ class SendHuay extends Command
                     'readable_edition' => $results->readable_edition,
                     'result_value' => $result_value
                 ];
+                if($key != 0){ 
+                  $new_line = "\n" ;
+                } 
+
+                $slug = $results->edition_slug;
+                $round = substr($slug, strrpos($slug, '|' )+1);
+                $message_value = $message_value.$new_line.'รอบที่ '.$round.' : '.$result_value['3upper'].'-'.$result_value['2under'];
             }
         }
         // $message = $data['readable_edition'] .' สองตัวล่าง :'.$data['result_value']['2under'].' สามตัวบน :'.$data['result_value']['3upper'];
@@ -62,27 +72,71 @@ class SendHuay extends Command
         foreach($agents as $agent){
             if(!empty($agent->host)){
                 foreach($agent->host as $host){
-                    $message = '';
-                    $message1 = '';
-                    $message2 = '';
-                    $under2 = $data['result_value']['2under'];
-                    $upper3 = $data['result_value']['3upper'];
-                    $formulaUnder2 = Formula::where('user_id',$host->user_id)->where('value',$under2)->inRandomOrder()->first();
-                    $formulaUpper3 = Formula::where('user_id',$host->user_id)->where('value',$upper3)->inRandomOrder()->first();
-                    if($formulaUnder2){
-                        $message1 = 'สองตัวล่าง : '.$under2.' สูตร : '.$formulaUnder2->result;
-                    }
-                    if($formulaUpper3){
-                        $message2 = 'สามตัวบน : '.$upper3.' สูตร : '.$formulaUpper3->result;
-                    }
-                    $message = $message1 . $message2;
-                    if($message != ''){
+                    if($message_value != ''){
                         $token = $host->line_token;
                         $line = new Line($token);
-                        $line->send($message);
+                        $line->send("\n".'ผลหวยสอยดาว'."\n".'arawanbet'."\n"."\n".$message_value);
                     }
                 }
             }
         }
+
+        foreach($agents as $agent){
+            if(!empty($agent->host)){
+                foreach($agent->host as $host){
+                    $guideHuayMessage2under = [];
+                    $guideHuayMessage3upper = [];
+                    $lastGuideMessage2under = '';
+                    $lastGuideMessage3upper = '';
+                    $under2 = $soidow[0]->results[0]->result_value;
+                    $upper3 = $soidow[0]->results[1]->result_value;
+                    $formulaUnder2 = Formula::where('user_id',$host->user_id)->where('type',2)->where('condition',0)->with('values')->get();
+                    foreach($formulaUnder2 as $dataUnder2){
+                    if($dataUnder2->values){
+                        $guideHuayCheck2Under = FormulaValue::where('formula_id',$dataUnder2->id)->where('value',$under2)->inRandomOrder()->first();
+                        if($guideHuayCheck2Under){
+                            $guideHuayMessage2under[] = $dataUnder2->result;
+                        }
+                    }
+                    }
+
+                    $formulaUpper3 = Formula::where('user_id',$host->user_id)->where('type',3)->where('condition',0)->with('values')->get();
+                    foreach($formulaUpper3 as $dataUpper3){
+                    if($dataUpper3->values){
+                        $guideHuayCheck3Upper = FormulaValue::where('formula_id',$dataUpper3->id)->where('value',$upper3)->inRandomOrder()->first();
+                        if($guideHuayCheck3Upper){
+                            $guideHuayMessage3upper[] = $dataUpper3->result;
+                        }
+                    }
+                    }
+
+                    if(!empty($guideHuayMessage2under)){
+                    $guild2under = array_rand($guideHuayMessage2under);
+                    $guildRandom2under = $guideHuayMessage2under[$guild2under];
+                    $lastGuideMessage2under = "\n".'พบสองตัวล่าง เลข '.$under2."\n".'คำแนะนำ : '.$guildRandom2under;
+                    }
+
+                    if(!empty($guideHuayMessage3upper)){
+                    $guild3upper = array_rand($guideHuayMessage3upper);
+                    $guildRandom3upper = $guideHuayMessage3upper[$guild3upper];
+                    $lastGuideMessage3upper = "\n".'พบสามตัวบน เลข '.$upper3."\n".'คำแนะนำ : '.$guildRandom3upper;
+                    }
+
+                    if($lastGuideMessage2under != ''){
+                        $token = $host->line_token;
+                        $line = new Line($token);
+                        $line->send($lastGuideMessage2under);
+                    }
+
+                    if($lastGuideMessage3upper != ''){
+                        $token = $host->line_token;
+                        $line = new Line($token);
+                        $line->send($lastGuideMessage3upper);
+                    }
+
+                }
+            }
+        }
+
     }
 }
