@@ -17,3 +17,20 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/guide/soidow', function () {
+    try {
+        Artisan::call("command:SendHuay");
+        $message = [
+            'status' => 200,
+            'success' => 'true',
+        ];
+        return $message;
+    } catch (\Throwable $e) {
+        $message = [
+            'status' => 500,
+            'success' => 'false',
+        ];
+        return $message;
+    }
+});

@@ -43,7 +43,6 @@ class SendHuay extends Command
      */
     public function handle()
     {
-
         $soidow_default = $this->api_base->soidown();
         $data = [];
         $message_value = '';
@@ -60,7 +59,7 @@ class SendHuay extends Command
                     'result_value' => $result_value
                 ];
                 if($key != 0){ 
-                  $new_line = "\n" ;
+                $new_line = "\n" ;
                 } 
 
                 $slug = $results->edition_slug;
@@ -146,14 +145,14 @@ class SendHuay extends Command
                             $inrounds = array_slice($soidow_default, 0, $under2condition->last_round);
                             if($under2condition->type == 2){
                                 foreach($inrounds as $inround){
-                                  $number[] = $inround->results[0]->result_value;
+                                $number[] = $inround->results[0]->result_value;
                                 }
-                              }
-                              if($under2condition->type == 3){
+                            }
+                            if($under2condition->type == 3){
                                 foreach($inrounds as $inround){
-                                  $number[] = $inround->results[1]->result_value;
+                                $number[] = $inround->results[1]->result_value;
                                 }
-                              }
+                            }
                             // $number = array_count_values($number);
                             $guideHuayCheck2UnderConditions = FormulaValue::where('formula_id',$under2condition->id)->whereIn('value',$number)->count();
                             if($guideHuayCheck2UnderConditions >= $under2condition->round){
@@ -170,6 +169,5 @@ class SendHuay extends Command
                 }
             }
         }
-
     }
 }

@@ -84,13 +84,23 @@
                 <div class="col-sm-3">
                   <select class="form-control" id="round" v-model="round">
                     <option disabled value="">เลือกรอบที่พบ</option>
-                    <option v-for="(round,index_round) in rounds" :key="index_round" :value="index_round + 1">{{index_round+1}}</option>
+                    <!-- <option v-for="(round,index_round) in rounds" :key="index_round" :value="index_round + 1">{{index_round+1}}</option> -->
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
                   </select>
                 </div>
                 <div class="col-sm-4">
                   <select class="form-control" id="last_round" v-model="last_round">
                     <option disabled value="">เลือกในรอบล่าสุด</option>
-                    <option v-for="(last_round,index_lastround) in last_rounds" :key="index_lastround" :value="index_lastround + 1">{{index_lastround+1}}</option>
+                    <!-- <option v-for="(last_round,index_lastround) in last_rounds" :key="index_lastround" :value="index_lastround + 1">{{index_lastround+1}}</option> -->
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    
                   </select>
                 </div>
               </div>
