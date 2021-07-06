@@ -47,11 +47,11 @@
                 <label class="col-sm-2 col-form-label">สูตรเช็ค</label>
                 <div class="col-sm-10  d-flex align-items-center">
                   <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" id="3upper" name="type" class="custom-control-input" value="3" v-model="type">
+                    <input type="radio" id="3upper" name="type" class="custom-control-input" value="3" v-model="type" @click="changeType()">
                     <label class="custom-control-label" for="3upper">สามตัวบน</label>
                   </div>
                   <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" id="2under" name="type" class="custom-control-input" value="2" v-model="type">
+                    <input type="radio" id="2under" name="type" class="custom-control-input" value="2" v-model="type" @click="changeType()">
                     <label class="custom-control-label" for="2under">สองตัวล่าง</label>
                   </div>
                 </div>
@@ -82,13 +82,13 @@
               <div class="form-group row" v-if="condition">
                 <label class="col-sm-2 col-form-label">เลขที่เลือกไว้ติดกัน มากกว่า</label>
                 <div class="col-sm-3">
-                  <select class="form-control" v-model="round">
+                  <select class="form-control" id="round" v-model="round">
                     <option disabled value="">เลือกรอบที่พบ</option>
                     <option v-for="(round,index_round) in rounds" :key="index_round" :value="index_round + 1">{{index_round+1}}</option>
                   </select>
                 </div>
                 <div class="col-sm-4">
-                  <select class="form-control" v-model="last_round">
+                  <select class="form-control" id="last_round" v-model="last_round">
                     <option disabled value="">เลือกในรอบล่าสุด</option>
                     <option v-for="(last_round,index_lastround) in last_rounds" :key="index_lastround" :value="index_lastround + 1">{{index_lastround+1}}</option>
                   </select>
@@ -98,7 +98,7 @@
               <div class="form-group row" v-if="type">
                 <label for="result" class="col-sm-2 col-form-label">ข้อความที่แสดง</label>
                 <div class="col-sm-10">
-                  <input type="text" class="form-control" id="result" v-model="result" placeholder="ข้อความที่แสดง">
+                  <textarea class="form-control" id="result" v-model="result" placeholder="ข้อความที่แสดง"></textarea>
                 </div>
               </div>
             </form>
@@ -119,6 +119,9 @@ export default {
   props:['oldformulas','close_input'],
   data () {
     return {
+        validate:[],
+        validate_round:0,
+        validate_last_round:0,
         dataIndex:'',
         id:'',
         title:'',
@@ -141,24 +144,61 @@ export default {
   computed:{
   },
   methods: {
-      addValue: function () {
+      addValue() {
+        this.values.push({ value: '' });
+      },
+      changeType(){
+        this.values = [];
         this.values.push({ value: '' });
       },
       submitFormula(){
+          let self = this
           if(this.title.length == 0){
               $('#title').addClass('border border-danger')
           }
-          if(this.values.length == 0){
-              $('.value').addClass('border border-danger')
+
+          this.validate = []
+          $.each(this.values, function(key, value) {
+            if(value.value == '' || value.value.length != parseInt(self.type)){
+              self.validate.push('1')
+            }else{
+              self.validate.push('0')
+            }
+          });
+          if(this.validate.indexOf("1") !== -1){
+            $('.value').addClass('border border-danger')
+          }else{
+            $('.value').removeClass('border border-danger')
+            this.validate = 0
           }
+
           if(this.result.length == 0){
               $('#result').addClass('border border-danger')
           }
-          if(this.title.length > 0 && this.values.length > 0  && this.result.length > 0){
-              let self = this
+
+
+          if(this.condition == 1){
+            if(this.round <= 0){
+              $('#round').addClass('border border-danger')
+              this.validate_round = 1
+            }else{
+              $('#round').removeClass('border border-danger')
+              this.validate_round = 0
+            }
+            if(this.last_round <= 0){
+              $('#last_round').addClass('border border-danger')
+              this.validate_last_round = 1
+            }else{
+              $('#last_round').removeClass('border border-danger')
+              this.validate_last_round = 0
+            }
+          }
+
+          if(this.title.length > 0 && this.validate == 0 && this.result.length > 0 && this.validate_round == 0 && this.validate_last_round == 0){
               $('#title').removeClass('border border-danger')
-              $('.value').removeClass('border border-danger')
               $('#result').removeClass('border border-danger')
+              $('#round').removeClass('border border-danger')
+              $('#last_round').removeClass('border border-danger')
               axios.post(baseUrl+'/backends/host/formula', {
                   id:this.id,
                   title: this.title,
@@ -177,6 +217,7 @@ export default {
                   }else{
                     self.formulaDatas.push({"id" : response.data.id ,"title":response.data.title,"type":response.data.type,"condition":response.data.condition,"round":response.data.round,"last_round":response.data.last_round,"values":response.data.values,"result":response.data.result})
                   }
+                  self.dataIndex = []
                   self.dataIndex = ''
                   self.id = ''
                   self.title =''

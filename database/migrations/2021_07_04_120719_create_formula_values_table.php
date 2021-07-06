@@ -16,7 +16,7 @@ class CreateFormulaValuesTable extends Migration
         Schema::create('formula_values', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('formula_id');
-            $table->integer('value');
+            $table->string('value');
             $table->timestamps();
             $table->foreign('formula_id')
                 ->references('id')
