@@ -73,9 +73,13 @@ class SendHuay extends Command
             if(!empty($agent->host)){
                 foreach($agent->host as $host){
                     if($message_value != ''){
-                        $token = $host->line_token;
-                        $line = new Line($token);
-                        $line->send("\n".'ผลหวยสอยดาว'."\n".'arawanbet'."\n"."\n".$message_value);
+                        try {
+                            $token = $host->line_token;
+                            $line = new Line($token);
+                            $line->send("\n".'ผลหวยสอยดาว'."\n".'arawanbet'."\n"."\n".$message_value);
+                        } catch (\Throwable $th) {
+                            //throw $th;
+                        }
                     }
                 }
             }
@@ -142,15 +146,23 @@ class SendHuay extends Command
                     }
 
                     if($lastGuideMessage2under != ''){
-                        $token = $host->line_token;
-                        $line = new Line($token);
-                        $line->send($lastGuideMessage2under);
+                        try {
+                            $token = $host->line_token;
+                            $line = new Line($token);
+                            $line->send($lastGuideMessage2under);
+                        } catch (\Throwable $th) {
+                            //throw $th;
+                        }
                     }
 
                     if($lastGuideMessage3upper != ''){
-                        $token = $host->line_token;
-                        $line = new Line($token);
-                        $line->send($lastGuideMessage3upper);
+                        try {
+                            $token = $host->line_token;
+                            $line = new Line($token);
+                            $line->send($lastGuideMessage3upper);
+                        } catch (\Throwable $th) {
+                            //throw $th;
+                        }
                     }
 
                     $formulaUnder2condition = Formula::where('user_id',$host->user_id)->where('condition',1)->with('values')->get();
@@ -179,9 +191,13 @@ class SendHuay extends Command
                                     $guideHuayCheck2UnderConditionsMessages =  "\n".'คำแนะนำ : '.$under2condition->result;
                                 }
                                 if($guideHuayCheck2UnderConditionsMessages != ''){
-                                    $token = $host->line_token;
-                                    $line = new Line($token);
-                                    $line->send($guideHuayCheck2UnderConditionsMessages);
+                                    try {
+                                        $token = $host->line_token;
+                                        $line = new Line($token);
+                                        $line->send($guideHuayCheck2UnderConditionsMessages);
+                                    } catch (\Throwable $th) {
+                                        //throw $th;
+                                    }
                                 }
                             }
                         }

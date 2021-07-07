@@ -20,6 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('/guide/soidow', function () {
     try {
+        sleep(5);
         Artisan::call("command:SendHuay");
         $message = [
             'status' => 200,
