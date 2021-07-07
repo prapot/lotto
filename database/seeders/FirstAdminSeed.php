@@ -18,8 +18,8 @@ class FirstAdminSeed extends Seeder
         $datas = [
             [
                 'name' => 'Super-Admin',
-                'email' => 'super-admin@lotto.com',
-                'password' => bcrypt('lotto2021'),
+                'email' => 'super-admin@arawanbet.com',
+                'password' => bcrypt('arawanbet2021'),
                 'role' => 'super-admin',
                 'admin_id' => '0',
                 'status' => '1'
