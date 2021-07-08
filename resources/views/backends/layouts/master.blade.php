@@ -11,7 +11,7 @@
 
   <!-- Styles -->
   @yield('css')
-  <link href="{{ asset(mix('backend/css/app.css')) }}" rel="stylesheet">
+  <link href="{{ mix('backend/css/app.css') }}" rel="stylesheet">
 </head>
 <body class="c-app">
     @include('backends.layouts.sidebar')
@@ -32,5 +32,5 @@
   <script type="text/javascript">var baseUrl = '{{ @url('/') }}' </script>
  
   @yield('js')
-  <script src="{{ asset(mix('backend/js/app.js')) }}" defer></script>
+  <script src="{{ mix('backend/js/app.js') }}" defer></script>
 </html>
