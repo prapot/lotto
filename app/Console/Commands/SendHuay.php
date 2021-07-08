@@ -42,6 +42,20 @@ class SendHuay extends Command
      *
      * @return int
      */
+
+    function DateThai($strDate)
+	{
+		$strYear = date("Y",strtotime($strDate))+543;
+		$strMonth= date("n",strtotime($strDate));
+		$strDay= date("j",strtotime($strDate));
+		$strHour= date("H",strtotime($strDate));
+		$strMinute= date("i",strtotime($strDate));
+		$strSeconds= date("s",strtotime($strDate));
+		$strMonthCut = Array("","มกราคม.","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
+		$strMonthThai=$strMonthCut[$strMonth];
+		return "$strDay $strMonthThai $strYear";
+	}
+
     public function handle()
     {
         $soidow_default = $this->api_base->soidown();
@@ -65,6 +79,7 @@ class SendHuay extends Command
 
                 $slug = $results->edition_slug;
                 $round = substr($slug, strrpos($slug, '|' )+1);
+                $dateround = $this->DateThai(strtok($slug, '|'));
                 $message_value = $message_value.$new_line.'รอบที่ '.$round.' : '.$result_value['3upper'].'-'.$result_value['2under'];
             }
         }
@@ -75,7 +90,10 @@ class SendHuay extends Command
                 foreach($agent->host as $host){
                     if($message_value != ''){
                         try {
-                            $messageResult = "\n".'ผลหวยสอยดาว'."\n".'arawanbet'."\n"."\n".$message_value;
+                            $handEmoji = "\u{1f64f}\u{1f64f}\u{1f64f}\u{1f64f}\u{1f64f}";
+                            $textLine = "------------------------------------";
+                            $lastHuay = "รายงานผล ARAWAN"."\n"."ล่าสุดรอบที่ ".$round.' '.$result_value['3upper'].'-'.$result_value['2under'];
+                            $messageResult = "\n".'ผลหวยสอยดาว'."\n".'arawanbet'."\n".$handEmoji."\n\n".$message_value."\n\n".$textLine."\n\n".$lastHuay."\n\n".$textLine."\n\n".$dateround."\n\n".$handEmoji;
                             $token = $host->line_token;
                             $line = new Line($token);
                             $line->send($messageResult);
