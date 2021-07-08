@@ -9,6 +9,7 @@ use App\Services\ApiBase;
 use App\Models\Formula;
 use App\Models\FormulaValue;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class SendHuay extends Command
 {
@@ -56,6 +57,7 @@ class SendHuay extends Command
 		return "$strDay $strMonthThai $strYear";
 	}
 
+
     public function handle()
     {
         $soidow_default = $this->api_base->soidown();
@@ -80,7 +82,8 @@ class SendHuay extends Command
                 $slug = $results->edition_slug;
                 $round = substr($slug, strrpos($slug, '|' )+1);
                 $dateround = $this->DateThai(strtok($slug, '|'));
-                $message_value = $message_value.$new_line.'รอบที่ '.$round.' : '.$result_value['3upper'].'-'.$result_value['2under'];
+                $close_at = date('h:i', strtotime($results->close_at));
+                $message_value = $message_value.$new_line.$round.' : '.$close_at.' '."\u{1F449}".' '.$result_value['3upper'].'-'.$result_value['2under'];
             }
         }
         // $message = $data['readable_edition'] .' สองตัวล่าง :'.$data['result_value']['2under'].' สามตัวบน :'.$data['result_value']['3upper'];
@@ -92,7 +95,7 @@ class SendHuay extends Command
                         try {
                             $handEmoji = "\u{1f64f}\u{1f64f}\u{1f64f}\u{1f64f}\u{1f64f}";
                             $textLine = "------------------------------------";
-                            $lastHuay = "รายงานผล ARAWAN"."\n"."ล่าสุดรอบที่ ".$round.' '.$result_value['3upper'].'-'.$result_value['2under'];
+                            $lastHuay = "รายงานผล ARAWAN"."\n"."ล่าสุดรอบที่ ".$round.' '."\u{1F449}".' '.$result_value['3upper'].'-'.$result_value['2under'];
                             $messageResult = "\n".'ผลหวยสอยดาว'."\n".'arawanbet'."\n".$handEmoji."\n\n".$message_value."\n\n".$textLine."\n\n".$lastHuay."\n\n".$textLine."\n\n".$dateround."\n\n".$handEmoji;
                             $token = $host->line_token;
                             $line = new Line($token);
