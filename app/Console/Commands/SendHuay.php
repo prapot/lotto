@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Services\ApiBase;
 use App\Models\Formula;
 use App\Models\FormulaValue;
+use Illuminate\Support\Facades\Log;
 
 class SendHuay extends Command
 {
@@ -74,9 +75,11 @@ class SendHuay extends Command
                 foreach($agent->host as $host){
                     if($message_value != ''){
                         try {
+                            $messageResult = "\n".'ผลหวยสอยดาว'."\n".'arawanbet'."\n"."\n".$message_value;
                             $token = $host->line_token;
                             $line = new Line($token);
-                            $line->send("\n".'ผลหวยสอยดาว'."\n".'arawanbet'."\n"."\n".$message_value);
+                            $line->send($messageResult);
+                            Log::channel('logGuide')->info("\n".'ห้อง'.$host->name.$messageResult);
                         } catch (\Throwable $th) {
                             //throw $th;
                         }
@@ -150,6 +153,7 @@ class SendHuay extends Command
                             $token = $host->line_token;
                             $line = new Line($token);
                             $line->send($lastGuideMessage2under);
+                            Log::channel('logGuide')->info("\n".$lastGuideMessage2under);
                         } catch (\Throwable $th) {
                             //throw $th;
                         }
@@ -160,6 +164,7 @@ class SendHuay extends Command
                             $token = $host->line_token;
                             $line = new Line($token);
                             $line->send($lastGuideMessage3upper);
+                            Log::channel('logGuide')->info("\n".$lastGuideMessage3upper);
                         } catch (\Throwable $th) {
                             //throw $th;
                         }
@@ -195,6 +200,7 @@ class SendHuay extends Command
                                         $token = $host->line_token;
                                         $line = new Line($token);
                                         $line->send($guideHuayCheck2UnderConditionsMessages);
+                                        Log::channel('logGuide')->info("\n".$guideHuayCheck2UnderConditionsMessages);
                                     } catch (\Throwable $th) {
                                         //throw $th;
                                     }
