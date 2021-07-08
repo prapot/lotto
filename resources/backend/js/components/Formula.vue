@@ -131,7 +131,7 @@
                       </svg>
                     </div>
                     <div slot="emoji-picker" slot-scope="{ emojis, insert, display }">
-                      <div class="emoji-picker" :style="{ top: display.y + 'px', left: display.x + 'px' }">
+                      <div class="emoji-picker" :style="{ top: '0px', right: '0px' }">
                         <div class="emoji-picker__search">
                           <input type="text" v-model="search" v-focus>
                         </div>
