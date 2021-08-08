@@ -18,8 +18,20 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/guide/soidow', function () {
+Route::post('{server?}/guide/soidow/', function ($server) {
+    if($server){
+        $message = [
+            'status' => 200,
+            'success' => 'true',
+            'message' => 'server test',
+        ];
+        return $message;
+    }
     try {
+        $message = [
+            'status' => 200,
+            'success' => 'true',
+        ];
         sleep(5);
         Artisan::call("command:SendHuay");
         $message = [
