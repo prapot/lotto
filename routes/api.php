@@ -18,7 +18,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('{server?}/guide/soidow/', function ($server) {
+Route::post('guide/soidow/{server?}', function ($server = null) {
     if($server){
         $message = [
             'status' => 200,
