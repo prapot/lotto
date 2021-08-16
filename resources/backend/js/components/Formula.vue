@@ -60,12 +60,14 @@
               <div class="form-group row" v-if="type">
                 <label for="value" class="col-sm-2 col-form-label">เลขที่เลือก</label>
                 <div class="col-sm-10 row">
-                  <div class="col-sm-2" v-for="(value, index_value) in values" :key="index_value" :class="(values.length > 6)?'mt-3':''">
+                  <div class="col-sm-2 position-relative" v-for="(value, index_value) in values" :key="index_value" :class="(values.length > 6)?'mt-3':''">
                     <input type="text" class="form-control value"  OnKeyPress="return chkNumber(this)" v-model="value.value" placeholder="ผลที่ออก">
+                     <img src="/images/remove.png" class="pointer remove-item" width="20" @click="removeValue(value)">
                   </div>
                   <div class="col-sm-2 d-flex align-items-center" :class="(values.length > 5)?'mt-3':''">
                     <img v-if="close_input == 'false'" src="/images/plus.png" class="pointer" width="20" @click="addValue()">
                   </div>
+                  <span class="text-danger pt-2 d-none" id="error-value">กรุณาระบุเลข</span>
                 </div>
               </div>
 
@@ -217,6 +219,12 @@ export default {
       addValue() {
         this.values.push({ value: '' });
       },
+      removeValue(index){
+        const indexArr = this.values.indexOf(index);
+        if (indexArr > -1) {
+          this.values.splice(indexArr, 1);
+        }
+      },
       changeType(){
         this.values = [];
         this.values.push({ value: '' });
@@ -228,6 +236,10 @@ export default {
           }
 
           this.validate = []
+          if(this.values.length <= 0){
+            $('#error-value').removeClass('d-none')
+            return false;
+          }
           $.each(this.values, function(key, value) {
             if(value.value == '' || value.value.length != parseInt(self.type)){
               self.validate.push('1')
