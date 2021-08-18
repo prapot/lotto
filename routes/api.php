@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Cache;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,6 +20,21 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('guide/soidow/{server?}', function ($server = null) {
+
+    $cooldown = Cache::has('cooldown');
+    $message = Cache::remember('cooldown',config('cache.redis_lifetime'), function ()  {
+        $message = [
+            'status' => 200,
+            'success' => 'true',
+            'message' => 'waiting time.',
+        ];
+        return $message;
+    });
+    // Cache::forget('cooldown');
+    if($cooldown){
+        return $message;
+    }
+
     if($server){
         $message = [
             'status' => 200,
@@ -43,6 +59,7 @@ Route::post('guide/soidow/{server?}', function ($server = null) {
         $message = [
             'status' => 500,
             'success' => 'false',
+            'message' => $e->getMessage()
         ];
         return $message;
     }

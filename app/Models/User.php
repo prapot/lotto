@@ -47,6 +47,6 @@ class User extends Authenticatable
     }
 
     public function host(){
-        return $this->hasMany('App\Models\Host', 'user_id', 'id');
+        return $this->hasMany('App\Models\Host', 'user_id', 'id')->groupby('line_token');
     }
 }

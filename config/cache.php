@@ -16,6 +16,8 @@ return [
     */
 
     'default' => env('CACHE_DRIVER', 'file'),
+    
+    'redis_lifetime' => env('REDIS_LIFETIME', '86400'),
 
     /*
     |--------------------------------------------------------------------------
