@@ -82,8 +82,9 @@ class SendHuay extends Command
                 $slug = $results->edition_slug;
                 $round = substr($slug, strrpos($slug, '|' )+1);
                 $dateround = $this->DateThai(strtok($slug, '|'));
-                $close_at = date('h:i', strtotime($results->close_at));
+                $close_at = date('H:i', strtotime($results->close_at));
                 $message_value = $message_value.$new_line.$round.' : '.$close_at.' '."\u{1F449}".' '.$result_value['3upper'].'-'.$result_value['2under'];
+
             }
         }
         // $message = $data['readable_edition'] .' สองตัวล่าง :'.$data['result_value']['2under'].' สามตัวบน :'.$data['result_value']['3upper'];
