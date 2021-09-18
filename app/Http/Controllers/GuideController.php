@@ -68,8 +68,10 @@ class GuideController extends Controller
 
     function findStatus($status,$time){
 
-        $contains = array_search($time,$status);
-
+        $contains = @array_search($time,$status);
+        if($contains == null){
+            $contains = false;
+        }
         return $contains;
     }
 
