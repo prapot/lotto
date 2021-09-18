@@ -9,6 +9,7 @@ require('./bootstrap');
 import '@coreui/coreui-pro/dist/js/coreui.bundle.min.js'
 require('axios');
 require('sweetalert');
+var _ = require('lodash');
 
 /**
  * The following block of code may be used to automatically register your

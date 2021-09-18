@@ -33,6 +33,7 @@ class HostController extends Controller
     public function store(Request $request){
 
       $datas = $request->all();
+      $datas['status'] = json_encode($datas['status']);
       $datas['user_id'] = Auth::User()->id;
       $host = new Host;
       $host->fill($datas);
@@ -95,6 +96,13 @@ class HostController extends Controller
       $formula = Formula::findOrFail($datas['id']);
       $formula->delete();
   
+    }
+
+    public function updateStatus(Request $request){
+      $datas = $request->all();
+      $host = Host::find($datas['id']);
+      $host->status = $datas['status'];
+      $host->save();
     }
 
     

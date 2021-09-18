@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cache;
+use App\Http\Controllers\GuideController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +19,8 @@ use Illuminate\Support\Facades\Cache;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('new/guide/soidow/{server?}',[GuideController::class, 'guide']);
 
 Route::post('guide/soidow/{server?}', function ($server = null) {
 
@@ -48,7 +51,7 @@ Route::post('guide/soidow/{server?}', function ($server = null) {
             'status' => 200,
             'success' => 'true',
         ];
-        sleep(75);
+        sleep(95);
         Artisan::call("command:SendHuay");
         $message = [
             'status' => 200,

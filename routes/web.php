@@ -62,6 +62,7 @@ Route::prefix('backends')->name('backends.')->middleware(['auth','admin'])->grou
     Route::prefix('host')->name('host.')->group(function () {
         Route::get('/', [HostController::class, 'host'])->name('host');
         Route::post('/', [HostController::class, 'store'])->name('store');
+        Route::put('/update/status', [HostController::class, 'updateStatus'])->name('updateStatus');
         Route::post('/destroy', [HostController::class, 'destroy'])->name('destroy');
         Route::post('/formula', [HostController::class, 'formula'])->name('formula');
         Route::post('/formula/destroy', [HostController::class, 'formulaDestroy'])->name('formula.destroy');
