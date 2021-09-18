@@ -7,7 +7,6 @@ use App\Models\User;
 use App\Models\Formula;
 use App\Models\FormulaValue;
 use Phattarachai\LineNotify\Line;
-use Arr;
 
 class GuideController extends Controller
 {
@@ -67,11 +66,10 @@ class GuideController extends Controller
 	}
 
     function findStatus($status,$time){
-
-        $contains = @array_search($time,$status);
-        if($contains == null){
-            $contains = false;
+        if($status == null){
+            return false;
         }
+        $contains = @array_search($time,$status);
         return $contains;
     }
 
