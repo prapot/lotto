@@ -20,7 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('new/guide/soidow/{server?}',[GuideController::class, 'guide']);
+Route::post('new/guide/soidow/{server?}',[GuideController::class, 'guide'])->middleware('checkToken');
 
 Route::post('guide/soidow/{server?}', function ($server = null) {
 

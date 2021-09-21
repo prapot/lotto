@@ -21,11 +21,30 @@ class GuideController extends Controller
             return $message;
         }
 
+        if(empty($request->all())){
+            $message = [
+                'status' => 404,
+                'success' => 'false',
+                'message' => 'data not found',
+            ];
+            return $message;
+        }
+
         try {
             $soidow_default = $request->all();
-            $soidowNormal10 = $soidow_default['normal-10'] ?? '';
-            $soidowNormal15 = $soidow_default['normal-15'] ?? '';
-            $soidowVip15 = $soidow_default['vip-15'] ?? '';
+            $soidowNormal10 = $soidow_default['normal-10'] ?? [];
+            $soidowNormal15 = $soidow_default['normal-15'] ?? [];
+            $soidowVip15 = $soidow_default['vip-15'] ?? [];
+
+            if(empty($soidowNormal10) && empty($soidowNormal15) && empty($soidowVip15)){
+                $message = [
+                    'status' => 404,
+                    'success' => 'false',
+                    'message' => 'data not found',
+                ];
+                return $message;
+            }
+
             if($soidowNormal10){
                 $this->normal($soidowNormal10,10);
             }
@@ -104,8 +123,8 @@ class GuideController extends Controller
                         try {
                             $handEmoji = "\u{1f64f}\u{1f64f}\u{1f64f}\u{1f64f}\u{1f64f}";
                             $textLine = "------------------------------------";
-                            $lastHuay = "รายงานผล ARAWAN"."\n"."ล่าสุดรอบที่ ".$round.' '."\u{1F449}".' '.$result['3upper'].'-'.$result['2under'];
-                            $messageResult = "\n".'ผลหวยสอยดาว'."\n".'arawanbet'."\n".$handEmoji."\n\n".$message_value."\n\n".$textLine."\n\n".$lastHuay."\n\n".$textLine."\n\n".$dateround."\n\n".$handEmoji;
+                            $lastHuay = "ผลสอยดาว ARAWAN - 10 นาที"."\n"."ล่าสุดรอบที่ ".$round.' '."\u{1F449}".' '.$result['3upper'].'-'.$result['2under'];
+                            $messageResult = "\n".$handEmoji."\n".'ผลหวยสอยดาว'."\n".'arawanbet - 10 นาที'."\n".$dateround."\n".$handEmoji."\n\n".$message_value."\n\n".$textLine."\n\n".$lastHuay."\n\n".$textLine."\n\n".$dateround;
                             $token = $host->line_token;
                             $line = new Line($token);
                             $line->send($messageResult);
@@ -172,22 +191,24 @@ class GuideController extends Controller
                             $normalLastHuay = '';
                             $vipLastHuay = '';
                             $handEmoji = "\u{1f64f}\u{1f64f}\u{1f64f}\u{1f64f}\u{1f64f}";
-                            $starEmoji = "\u{1F31F}\u{1F31F}\u{1F31F}\u{1F31F}\u{1F31F}";
+                            $VIPEmoji = "\u{1F31F}\u{1f64f}\u{1F31F}\u{1f64f}\u{1F31F}";
                             $textLine = "\n"."------------------------------------";
-                            $header = "\n".'ผลหวยสอยดาว '.$starEmoji."\n\n";
+                            $header = "\n".$handEmoji."\n"."ผลหวยสอยดาว"."\n".'Arawanbet - 15 นาที (VIP)'."\n".$dateround."\n";
+                            $normalLine = $vip_message_value == '' ? "\n\n" : '';
                             $normalNewLine = '';
                             if($normal_message_value){
-                                $normalLastHuay = "รายงานผล ARAWAN ".$starEmoji."\n"."ล่าสุดรอบที่ ".$round.' '."\u{1F449}".' '.$normalResult['3upper'].'-'.$normalResult['2under'];
-                                $messageNormalResult = 'arawanbet'."\n".$handEmoji."\n\n".$normal_message_value."\n".$textLine."\n\n";
+                                $normalLastHuay = "ผลสอยดาว ARAWAN - 15 นาที"."\n"."ล่าสุดรอบที่ ".$round.' '."\u{1F449}".' '.$normalResult['3upper'].'-'.$normalResult['2under'];
+                                $messageNormalResult = $handEmoji."\n\n\n".$normal_message_value."\n".$textLine.$normalLine;
                                 $normalNewLine = "\n\n";
                             }
                             if($vip_message_value){
-                                $vipNewLine = $normalNewLine ? "\n" : "\n\n";
-                                $vipLastHuay = $normalNewLine."รายงานผล ARAWAN VIP".$starEmoji."\n"."ล่าสุดรอบที่ ".$round.' '."\u{1F449}".' '.$vipResult['3upper'].'-'.$vipResult['2under'];
-                                $messageVipResult = 'arawanbet VIP'."\n".$handEmoji.$vipNewLine.$vip_message_value."\n".$textLine."\n\n";
+                                $vipNewLine = $normalNewLine ? "" : "\n\n";
+                                $vipEmo = $normalNewLine ? '' : $handEmoji;
+                                $vipLastHuay = $normalNewLine.$VIPEmoji."\n"."ผลสอยดาว ARAWAN - 15 นาที (VIP)"."\n"."ล่าสุดรอบที่ ".$round.' '."\u{1F449}".' '.$vipResult['3upper'].'-'.$vipResult['2under']."\n".$VIPEmoji;
+                                $messageVipResult = $vipEmo."\n".$vipNewLine.$vip_message_value."\n".$textLine."\n\n";
                             }
 
-                            $footer = $normalLastHuay.$vipLastHuay."\n".$textLine."\n\n".$dateround."\n\n".$handEmoji;
+                            $footer = $normalLastHuay.$vipLastHuay."\n".$textLine."\n\n".$dateround;
 
                             $messageResult = $header.$messageNormalResult.$messageVipResult.$footer;
                             $token = $host->line_token;
