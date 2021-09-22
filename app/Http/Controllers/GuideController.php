@@ -32,9 +32,9 @@ class GuideController extends Controller
 
         try {
             $soidow_default = $request->all();
-            $soidowNormal10 = $soidow_default['normal-10'] ?? [];
-            $soidowNormal15 = $soidow_default['normal-15'] ?? [];
-            $soidowVip15 = $soidow_default['vip-15'] ?? [];
+            $soidowNormal10 = $soidow_default['soidown'] ?? [];
+            $soidowNormal15 = $soidow_default['soidown_15'] ?? [];
+            $soidowVip15 = $soidow_default['soidown_vip'] ?? [];
 
             if(empty($soidowNormal10) && empty($soidowNormal15) && empty($soidowVip15)){
                 $message = [
