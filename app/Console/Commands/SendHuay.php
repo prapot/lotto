@@ -66,7 +66,7 @@ class SendHuay extends Command
         $new_line = '';
         $soidow = array_reverse($soidow_default);
         foreach($soidow as $key => $results){
-            if($results->status == 'complete'){
+            if($results->status == 'complete' || $results->status == 'calculating'){
                 $result_value = [];
                 foreach($results->results as $value){
                     $result_value[$value->result_key] = $value->result_value;
