@@ -193,23 +193,26 @@ class GuideController extends Controller
                             $handEmoji = "\u{1f64f}\u{1f64f}\u{1f64f}\u{1f64f}\u{1f64f}";
                             $VIPEmoji = "\u{1F31F}\u{1f64f}\u{1F31F}\u{1f64f}\u{1F31F}";
                             $textLine = "\n"."------------------------------------";
-                            $header = "\n".$handEmoji."\n"."ผลหวยสอยดาว"."\n".'Arawanbet - 15 นาที (VIP)'."\n".$dateround."\n";
+                            $headerFix = "\n".$handEmoji."\n"."ผลหวยสอยดาว"."\n".'Arawanbet - 15 นาที'."\n".$dateround."\n";
                             $normalLine = $vip_message_value == '' ? "\n\n" : '';
                             $normalNewLine = '';
                             if($normal_message_value){
+                                $headerGuide = "\n".$handEmoji."\n"."ผลหวยสอยดาว"."\n".'Arawanbet - 15 นาที'."\n".$dateround."\n";
                                 $normalLastHuay = "ผลสอยดาว ARAWAN - 15 นาที"."\n"."ล่าสุดรอบที่ ".$round.' '."\u{1F449}".' '.$normalResult['3upper'].'-'.$normalResult['2under'];
                                 $messageNormalResult = $handEmoji."\n\n\n".$normal_message_value."\n".$textLine.$normalLine;
                                 $normalNewLine = "\n\n";
                             }
                             if($vip_message_value){
+                                $headerGuide = "\n".$handEmoji."\n"."ผลหวยสอยดาว"."\n".'Arawanbet - 15 นาที (พิเศษ)'."\n".$dateround."\n";
                                 $vipNewLine = $normalNewLine ? "" : "\n\n";
                                 $vipEmo = $normalNewLine ? '' : $handEmoji;
-                                $vipLastHuay = $normalNewLine.$VIPEmoji."\n"."ผลสอยดาว ARAWAN - 15 นาที (VIP)"."\n"."ล่าสุดรอบที่ ".$round.' '."\u{1F449}".' '.$vipResult['3upper'].'-'.$vipResult['2under']."\n".$VIPEmoji;
+                                $vipLastHuay = $normalNewLine.$VIPEmoji."\n"."ผลสอยดาว ARAWAN - 15 นาที (พิเศษ)"."\n"."ล่าสุดรอบที่ ".$round.' '."\u{1F449}".' '.$vipResult['3upper'].'-'.$vipResult['2under']."\n".$VIPEmoji;
                                 $messageVipResult = $vipEmo."\n".$vipNewLine.$vip_message_value."\n".$textLine."\n\n";
                             }
 
+                            $header = $normal_message_value && $vip_message_value ? $headerFix : $headerGuide;
                             $footer = $normalLastHuay.$vipLastHuay."\n".$textLine."\n\n".$dateround;
-
+                            
                             $messageResult = $header.$messageNormalResult.$messageVipResult.$footer;
                             $token = $host->line_token;
                             $line = new Line($token);
