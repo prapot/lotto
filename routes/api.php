@@ -51,7 +51,7 @@ Route::post('guide/soidow/{server?}', function ($server = null) {
             'status' => 200,
             'success' => 'true',
         ];
-        sleep(95);
+        sleep(70);
         Artisan::call("command:SendHuay");
         $message = [
             'status' => 200,
