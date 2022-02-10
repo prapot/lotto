@@ -9,6 +9,10 @@
                 <p class="card-text">token : {{host.line_token}}</p>
                 <p class="card-text">status : </p>
                 <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="checkbox" :id="'status-time-5-'+index" :name="'status-'+host.id" :checked="toChecked(host.status,'5')" value="5" @click="updateStatus(host.id)">
+                  <label class="form-check-label" :for="'status-time-5-'+index">5 นาที</label>
+                </div>
+                <div class="form-check form-check-inline">
                   <input class="form-check-input" type="checkbox" :id="'status-time-10-'+index" :name="'status-'+host.id" :checked="toChecked(host.status,'10')" value="10" @click="updateStatus(host.id)">
                   <label class="form-check-label" :for="'status-time-10-'+index">10 นาที</label>
                 </div>
@@ -21,7 +25,7 @@
             </div>
         </div>
       </div>
-      
+
       <div class="form-group row" v-if="close_input == 'false'">
         <label for="name" class="col-sm-1 col-form-label">ชื่อห้อง</label>
         <div class="col-sm-5">
@@ -39,6 +43,10 @@
       <div class="form-group row" v-if="close_input == 'false'">
         <div class="col-sm-1">สถานะ</div>
         <div class="col-sm-5">
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" id="time-5" name="status" value="5">
+            <label class="form-check-label" for="time-5">5 นาที</label>
+          </div>
           <div class="form-check form-check-inline">
             <input class="form-check-input" type="checkbox" id="time-10" name="status" value="10">
             <label class="form-check-label" for="time-10">10 นาที</label>
@@ -58,7 +66,7 @@
     </div>
   </div>
 </template>
- 
+
 <script>
 export default {
   props:['oldhosts','close_input'],
@@ -181,5 +189,4 @@ export default {
     }
   }
 }
-</script> 
- 
+</script>

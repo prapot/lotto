@@ -32,11 +32,12 @@ class GuideController extends Controller
 
         try {
             $soidow_default = $request->all();
+            $soidowNormal5 = $soidow_default['soidown_5'] ?? [];
             $soidowNormal10 = $soidow_default['soidown'] ?? [];
             $soidowNormal15 = $soidow_default['soidown_15'] ?? [];
             $soidowVip15 = $soidow_default['soidown_vip'] ?? [];
 
-            if(empty($soidowNormal10) && empty($soidowNormal15) && empty($soidowVip15)){
+            if(empty($soidowNormal5) && empty($soidowNormal10) && empty($soidowNormal15) && empty($soidowVip15)){
                 $message = [
                     'status' => 404,
                     'success' => 'false',
@@ -44,6 +45,11 @@ class GuideController extends Controller
                 ];
                 return $message;
             }
+
+            if($soidowNormal5){
+                $this->normal($soidowNormal5,5);
+            }
+
 
             if($soidowNormal10){
                 $this->normal($soidowNormal10,10);
@@ -99,16 +105,16 @@ class GuideController extends Controller
         $new_line = '';
 
         foreach($numbers as $key => $result){
-            if($key != 0){ 
+            if($key != 0){
             $new_line = "\n" ;
-            } 
+            }
 
             $slug = $result['edition_slug'];
             $round = substr($slug, strrpos($slug, '|' )+1);
             $dateround = $this->DateThai(strtok($slug, '|'));
             $close_at = date('H:i', strtotime($result['close_at']));
             $message_value = $message_value.$new_line.$round.' : '.$close_at.' '."\u{1F449}".' '.$result['3upper'].'-'.$result['2under'];
-            
+
         }
 
         $agents = User::where('role','agent')->get();
@@ -118,13 +124,13 @@ class GuideController extends Controller
                     $arrayStatus = json_decode($host->status);
 
                     $checked = $this->findStatus($arrayStatus,$time);
-                    
+
                     if($message_value != '' && $checked !== false){
                         try {
                             $handEmoji = "\u{1f64f}\u{1f64f}\u{1f64f}\u{1f64f}\u{1f64f}";
                             $textLine = "------------------------------------";
-                            $lastHuay = "ผลสอยดาว ARAWAN - 10 นาที"."\n"."ล่าสุดรอบที่ ".$round.' '."\u{1F449}".' '.$result['3upper'].'-'.$result['2under'];
-                            $messageResult = "\n".$handEmoji."\n".'ผลหวยสอยดาว'."\n".'arawanbet - 10 นาที'."\n".$dateround."\n".$handEmoji."\n\n".$message_value."\n\n".$textLine."\n\n".$lastHuay."\n\n".$textLine."\n\n".$dateround;
+                            $lastHuay = "ผลสอยดาว ARAWAN - ".$time." นาที"."\n"."ล่าสุดรอบที่ ".$round.' '."\u{1F449}".' '.$result['3upper'].'-'.$result['2under'];
+                            $messageResult = "\n".$handEmoji."\n".'ผลหวยสอยดาว'."\n".'arawanbet - '.$time.' นาที'."\n".$dateround."\n".$handEmoji."\n\n".$message_value."\n\n".$textLine."\n\n".$lastHuay."\n\n".$textLine."\n\n".$dateround;
                             $token = $host->line_token;
                             $line = new Line($token);
                             $line->send($messageResult);
@@ -149,10 +155,10 @@ class GuideController extends Controller
         if(!empty($normalDatas)){
             $normalNumbers = array_reverse($normalDatas);
             foreach($normalNumbers as $key => $normalResult){
-                if($key != 0){ 
+                if($key != 0){
                 $new_line = "\n" ;
-                } 
-    
+                }
+
                 $slug = $normalResult['edition_slug'];
                 $round = substr($slug, strrpos($slug, '|' )+1);
                 $dateround = $this->DateThai(strtok($slug, '|'));
@@ -160,14 +166,14 @@ class GuideController extends Controller
                 $normal_message_value = $normal_message_value.$new_line.$round.' : '.$close_at.' '."\u{1F449}".' '.$normalResult['3upper'].'-'.$normalResult['2under'];
             }
         }
-        
+
         if(!empty($vipDatas)){
             $vipNumbers = array_reverse($vipDatas);
             foreach($vipNumbers as $key => $vipResult){
-                if($key != 0){ 
+                if($key != 0){
                 $new_line = "\n" ;
-                } 
-    
+                }
+
                 $slug = $vipResult['edition_slug'];
                 $round = substr($slug, strrpos($slug, '|' )+1);
                 $dateround = $this->DateThai(strtok($slug, '|'));
@@ -179,11 +185,11 @@ class GuideController extends Controller
         foreach($agents as $agent){
             if(!empty($agent->host)){
                 foreach($agent->host as $host){
-                    
+
                     $arrayStatus = json_decode($host->status);
 
                     $checked = $this->findStatus($arrayStatus,$time);
-                    
+
                     if(($normal_message_value != '' || $vip_message_value != '') && $checked !== false){
                         try {
                             $messageNormalResult = '';
@@ -212,7 +218,7 @@ class GuideController extends Controller
 
                             $header = $normal_message_value && $vip_message_value ? $headerFix : $headerGuide;
                             $footer = $normalLastHuay.$vipLastHuay."\n".$textLine."\n\n".$dateround;
-                            
+
                             $messageResult = $header.$messageNormalResult.$messageVipResult.$footer;
                             $token = $host->line_token;
                             $line = new Line($token);
@@ -258,7 +264,7 @@ class GuideController extends Controller
                         $lastGuideMessage3upper = '';
                         $under2 = $datas[0]['2under'];
                         $upper3 = $datas[0]['3upper'];
-                        
+
                         $formulas = Formula::where('user_id',$host->user_id)->where('condition',0)->with('values')->get();
                         foreach($formulas as $formula){
                             if($formula->type == 3){
@@ -278,7 +284,7 @@ class GuideController extends Controller
                                 }
                             }
                         }
-    
+
                         if(!empty($guideHuayMessage3upper)){
                             $guild3upper = array_rand($guideHuayMessage3upper);
                             $guildRandom3upper = $guideHuayMessage3upper[$guild3upper];
@@ -289,7 +295,7 @@ class GuideController extends Controller
                             $guildRandom2under = $guideHuayMessage2under[$guild2under];
                             $lastGuideMessage2under = $timeText."\n".'พบสองตัวล่าง เลข '.$under2."\n".'คำแนะนำ : '.$guildRandom2under;
                         }
-    
+
                         if($lastGuideMessage2under != ''){
                             try {
                                 $token = $host->line_token;
@@ -300,7 +306,7 @@ class GuideController extends Controller
                                 //throw $th;
                             }
                         }
-    
+
                         if($lastGuideMessage3upper != ''){
                             try {
                                 $token = $host->line_token;
@@ -311,7 +317,7 @@ class GuideController extends Controller
                                 //throw $th;
                             }
                         }
-    
+
                         $formulaUnder2condition = Formula::where('user_id',$host->user_id)->where('condition',1)->with('values')->get();
                         foreach($formulaUnder2condition as $under2condition){
                             $number = [];
