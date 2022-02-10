@@ -58,6 +58,9 @@ return [
 
     'soidown' => env('SOIDOWN', null),
 
+    'api_token' => env('API_TOKEN', null),
+
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

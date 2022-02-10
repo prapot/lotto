@@ -20,7 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('new/guide/soidow/{server?}',[GuideController::class, 'guide']);
+Route::post('new/guide/soidow/{server?}',[GuideController::class, 'guide'])->middleware('checkToken');
 
 Route::post('guide/soidow/{server?}', function ($server = null) {
 
@@ -51,7 +51,7 @@ Route::post('guide/soidow/{server?}', function ($server = null) {
             'status' => 200,
             'success' => 'true',
         ];
-        sleep(95);
+        sleep(70);
         Artisan::call("command:SendHuay");
         $message = [
             'status' => 200,
