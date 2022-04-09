@@ -35,9 +35,9 @@ class GuideController extends Controller
             $soidowNormal5 = $soidow_default['soidown_5'] ?? [];
             $soidowNormal10 = $soidow_default['soidown'] ?? [];
             $soidowNormal15 = $soidow_default['soidown_15'] ?? [];
-            $soidowVip15 = $soidow_default['soidown_vip'] ?? [];
+            $soidowVip5 = $soidow_default['soidown_vip'] ?? [];
 
-            if(empty($soidowNormal5) && empty($soidowNormal10) && empty($soidowNormal15) && empty($soidowVip15)){
+            if(empty($soidowNormal5) && empty($soidowNormal10) && empty($soidowNormal15) && empty($soidowVip5)){
                 $message = [
                     'status' => 404,
                     'success' => 'false',
@@ -55,8 +55,12 @@ class GuideController extends Controller
                 $this->normal($soidowNormal10,10);
             }
 
-            if($soidowNormal15 || $soidowVip15){
-                $this->vip($soidowNormal15,$soidowVip15,15);
+            if($soidowNormal15){
+                $this->normal($soidowNormal15,15);
+            }
+
+            if($soidowVip5){
+                $this->vip([],$soidowVip5,5);
             }
 
             $message = [
@@ -209,10 +213,10 @@ class GuideController extends Controller
                                 $normalNewLine = "\n\n";
                             }
                             if($vip_message_value){
-                                $headerGuide = "\n".$handEmoji."\n"."ผลหวยสอยดาว"."\n".'Arawanbet - 15 นาที (พิเศษ)'."\n".$dateround."\n";
+                                $headerGuide = "\n".$handEmoji."\n"."ผลหวยสอยดาว"."\n".'Arawanbet - 5 นาที (พิเศษ)'."\n".$dateround."\n";
                                 $vipNewLine = $normalNewLine ? "" : "\n\n";
                                 $vipEmo = $normalNewLine ? '' : $handEmoji;
-                                $vipLastHuay = $normalNewLine.$VIPEmoji."\n"."ผลสอยดาว ARAWAN - 15 นาที (พิเศษ)"."\n"."ล่าสุดรอบที่ ".$round.' '."\u{1F449}".' '.$vipResult['3upper'].'-'.$vipResult['2under']."\n".$VIPEmoji;
+                                $vipLastHuay = $normalNewLine.$VIPEmoji."\n"."ผลสอยดาว ARAWAN - 5 นาที (พิเศษ)"."\n"."ล่าสุดรอบที่ ".$round.' '."\u{1F449}".' '.$vipResult['3upper'].'-'.$vipResult['2under']."\n".$VIPEmoji;
                                 $messageVipResult = $vipEmo."\n".$vipNewLine.$vip_message_value."\n".$textLine."\n\n";
                             }
 
