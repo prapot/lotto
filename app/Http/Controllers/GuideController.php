@@ -36,8 +36,9 @@ class GuideController extends Controller
             $soidowNormal10 = $soidow_default['soidown'] ?? [];
             $soidowNormal15 = $soidow_default['soidown_15'] ?? [];
             $soidowVip5 = $soidow_default['soidown_vip'] ?? [];
+            $lotto_malaysia = $soidow_default['lotto_malaysia'] ?? [];
 
-            if(empty($soidowNormal5) && empty($soidowNormal10) && empty($soidowNormal15) && empty($soidowVip5)){
+            if(empty($soidowNormal5) && empty($soidowNormal10) && empty($soidowNormal15) && empty($soidowVip5) && empty($lotto_malaysia)){
                 $message = [
                     'status' => 404,
                     'success' => 'false',
@@ -61,6 +62,11 @@ class GuideController extends Controller
 
             if($soidowVip5){
                 $this->vip([],$soidowVip5,5);
+            }
+
+
+            if($lotto_malaysia){
+                $this->lotto($lotto_malaysia,'lotto_malaysia');
             }
 
             $message = [
@@ -243,6 +249,58 @@ class GuideController extends Controller
         if(!empty($vipDatas)){
             $this->sendGuide($vipDatas,$time);
         }
+    }
+
+
+    public function lotto($datas,$game_slug){
+
+        $numbers = array_reverse($datas);
+        $message_value = '';
+        $new_line = '';
+
+        foreach($numbers as $key => $result){
+            if($key != 0){
+            $new_line = "\n" ;
+            }
+
+            $slug = $result['edition_slug'];
+            $round = substr($slug, strrpos($slug, '|' )+1);
+            $dateround = $this->DateThai(strtok($slug, '|'));
+            $close_at = date('H:i', strtotime($result['close_at']));
+            $message_value = $message_value.$new_line.$round.' : '.$close_at.' '."\u{1F449}".' '.$result['3upper'].'-'.$result['2under'];
+
+        }
+
+        $game = config('game')[$game_slug];
+
+        $agents = User::where('role','agent')->get();
+        foreach($agents as $agent){
+            if(!empty($agent->host)){
+                foreach($agent->host as $host){
+                    $arrayStatus = json_decode($host->status);
+
+                    $checked = $this->findStatus($arrayStatus,$game_slug);
+
+                    if($message_value != '' && $checked !== false){
+                        try {
+                            $handEmoji = "\u{1f64f}\u{1f64f}\u{1f64f}\u{1f64f}\u{1f64f}";
+                            $textLine = "------------------------------------";
+                            $lastHuay = "ผลสอยดาว ARAWAN - ".$game['title']."\n"."ล่าสุดรอบที่ ".$round.' '."\u{1F449}".' '.$result['3upper'].'-'.$result['2under'];
+                            $messageResult = "\n".$handEmoji."\n".'ผลหวยสอยดาว'."\n".'arawanbet - '.$game['title']."\n".$dateround."\n".$handEmoji."\n\n".$message_value."\n\n".$textLine."\n\n".$lastHuay."\n\n".$textLine."\n\n".$dateround;
+                            dd($messageResult);
+                            $token = $host->line_token;
+                            $line = new Line($token);
+                            $line->send($messageResult);
+                            Log::channel('logGuide')->info("\n".'ห้อง'.$host->name.$messageResult);
+                        } catch (\Throwable $th) {
+                            //throw $th;
+                        }
+                    }
+                }
+            }
+        }
+
+        $this->sendGuide($datas,$game_slug);
     }
 
     function sendGuide($datas,$time){
