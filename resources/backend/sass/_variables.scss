@@ -1,0 +1,122 @@
+// Body
+$body-bg: #f8fafc;
+
+// Typography
+$font-family-sans-serif: 'Nunito', sans-serif;
+$font-size-base: 0.9rem;
+$line-height-base: 1.6;
+
+// Colors
+$blue: #3490dc;
+$indigo: #6574cd;
+$purple: #9561e2;
+$pink: #f66d9b;
+$red: #e3342f;
+$orange: #f6993f;
+$yellow: #ffed4a;
+$green: #38c172;
+$teal: #4dc0b5;
+$cyan: #6cb2eb;
+
+
+.page-login {
+    background-image: url(../../../public/images/bg.svg);
+    background-size: cover;
+    background-position: top right;
+    background-repeat: no-repeat;
+}
+
+.pointer{
+    cursor:pointer
+}
+
+.wrapper {
+  position: relative;
+  display: inline-block;
+  width:100%
+}
+
+.regular-input {
+  padding: 0.5rem 1rem;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  width: 20rem;
+  height: 12rem;
+  outline: none;
+}
+
+.regular-input:focus {
+  box-shadow: 0 0 0 3px rgba(66,153,225,.5);
+}
+
+.emoji-invoker {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.emoji-invoker:hover {
+  transform: scale(1.1);
+}
+.emoji-invoker > svg {
+  fill: #b1c6d0;
+}
+
+.emoji-picker {
+  position: absolute;
+  z-index: 1;
+  font-family: Montserrat;
+  border: 1px solid #ccc;
+  width: 15rem;
+  height: 20rem;
+  overflow: scroll;
+  padding: 1rem;
+  box-sizing: border-box;
+  border-radius: 0.5rem;
+  background: #fff;
+  box-shadow: 1px 1px 8px #c7dbe6;
+}
+.emoji-picker__search {
+  display: flex;
+}
+.emoji-picker__search > input {
+  flex: 1;
+  border-radius: 10rem;
+  border: 1px solid #ccc;
+  padding: 0.5rem 1rem;
+  outline: none;
+}
+.emoji-picker h5 {
+  margin-bottom: 0;
+  color: #b1b1b1;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  cursor: default;
+}
+.emoji-picker .emojis {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.emoji-picker .emojis:after {
+  content: "";
+  flex: auto;
+}
+.emoji-picker .emojis span {
+  padding: 0.2rem;
+  cursor: pointer;
+  border-radius: 5px;
+}
+.emoji-picker .emojis span:hover {
+  background: #ececec;
+  cursor: pointer;
+}
+.remove-item{
+  position: absolute;
+  top: -9px;
+  right: 5px;
+}
