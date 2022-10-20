@@ -31,14 +31,25 @@ class GuideController extends Controller
         }
 
         try {
-            $soidow_default = $request->all();
-            $soidowNormal5 = $soidow_default['soidown_5'] ?? [];
-            $soidowNormal10 = $soidow_default['soidown'] ?? [];
-            $soidowNormal15 = $soidow_default['soidown_15'] ?? [];
-            $soidowVip5 = $soidow_default['soidown_vip'] ?? [];
-            $lotto_malaysia = $soidow_default['lotto_malaysia'] ?? [];
+            $datas = $request->all();
+            $soidowNormal5 = $datas['soidown_5'] ?? [];
+            $soidowNormal10 = $datas['soidown'] ?? [];
+            $soidowNormal15 = $datas['soidown_15'] ?? [];
+            $soidowVip5 = $datas['soidown_vip'] ?? [];
 
-            if(empty($soidowNormal5) && empty($soidowNormal10) && empty($soidowNormal15) && empty($soidowVip5) && empty($lotto_malaysia)){
+            $games = config('game');
+
+            $lotto_games = [];
+
+            foreach($games as $g => $game){
+              foreach($datas as $key => $data){
+                if($g == $key){
+                  $lotto_games[$key] = $data;
+                }
+              }
+            }
+
+            if(empty($soidowNormal5) && empty($soidowNormal10) && empty($soidowNormal15) && empty($soidowVip5) && empty($lotto_games)){
                 $message = [
                     'status' => 404,
                     'success' => 'false',
@@ -65,8 +76,10 @@ class GuideController extends Controller
             }
 
 
-            if($lotto_malaysia){
-                $this->lotto($lotto_malaysia,'lotto_malaysia');
+            if($lotto_games){
+                foreach($lotto_games as $slug => $data_game){
+                  $this->lotto($data_game,$slug);
+                }
             }
 
             $message = [
@@ -253,7 +266,6 @@ class GuideController extends Controller
 
 
     public function lotto($datas,$game_slug){
-
         $numbers = array_reverse($datas);
         $message_value = '';
         $new_line = '';
@@ -285,9 +297,9 @@ class GuideController extends Controller
                         try {
                             $handEmoji = "\u{1f64f}\u{1f64f}\u{1f64f}\u{1f64f}\u{1f64f}";
                             $textLine = "------------------------------------";
-                            $lastHuay = "ผลสอยดาว ARAWAN - ".$game['title']."\n"."ล่าสุดรอบที่ ".$round.' '."\u{1F449}".' '.$result['3upper'].'-'.$result['2under'];
-                            $messageResult = "\n".$handEmoji."\n".'ผลหวยสอยดาว'."\n".'arawanbet - '.$game['title']."\n".$dateround."\n".$handEmoji."\n\n".$message_value."\n\n".$textLine."\n\n".$lastHuay."\n\n".$textLine."\n\n".$dateround;
-                            dd($messageResult);
+                            $lastHuay = $game['title']."\n"."ล่าสุดรอบที่ ".$round.' '."\u{1F449}".' '.$result['3upper'].'-'.$result['2under'];
+                            $messageResult = "\n".$handEmoji."\n".$game['title']."\n".'arawanbet - '.$game['title']."\n".$dateround."\n".$handEmoji."\n\n".$message_value."\n\n".$textLine."\n\n".$lastHuay."\n\n".$textLine."\n\n".$dateround;
+                            // dd($messageResult);
                             $token = $host->line_token;
                             $line = new Line($token);
                             $line->send($messageResult);
@@ -299,8 +311,6 @@ class GuideController extends Controller
                 }
             }
         }
-
-        $this->sendGuide($datas,$game_slug);
     }
 
     function sendGuide($datas,$time){
