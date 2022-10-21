@@ -64,6 +64,7 @@
                                     <host
                                         oldhosts="{{ json_encode($hosts) }}"
                                         close_input="true"
+                                        games="{{ json_encode(config('game')) }}"
                                     ></host>
                                 </div>
                             </div>

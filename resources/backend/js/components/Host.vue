@@ -21,9 +21,13 @@
                   <label class="form-check-label" :for="'status-time-15-'+index">15 นาที</label>
                 </div>
                 <p class="card-text mt-3">game : </p>
-                <div class="form-check form-check-inline" v-for="(game,game_index) in dataGames" :key="game_index">
-                  <input class="form-check-input" type="checkbox" :id="'status-'+game_index+'-'+index" :name="'status-'+host.id" :checked="toChecked(host.status,game_index)" :value="game_index" @click="updateStatus(host.id)">
-                  <label class="form-check-label" :for="'status-'+game_index+'-'+index">{{ game.title }}</label>
+                <div class="row">
+                  <div class="col-md-3" v-for="(game,game_index) in dataGames" :key="game_index">
+                    <div class="form-check form-check-inline" >
+                      <input class="form-check-input" type="checkbox" :id="'status-'+game_index+'-'+index" :name="'status-'+host.id" :checked="toChecked(host.status,game_index)" :value="game_index" @click="updateStatus(host.id)">
+                      <label class="form-check-label" :for="'status-'+game_index+'-'+index">{{ game.title }}</label>
+                    </div>
+                  </div>
                 </div>
                 <img v-if="close_input == 'false'" src="/images/remove.png" width="20" class="position-absolute pointer" style="top: 10px;right: 10px;" @click="beforeRemove(index)">
               </div>
@@ -66,10 +70,14 @@
 
       <div class="form-group row" v-if="close_input == 'false'">
         <div class="col-sm-1">เกม</div>
-        <div class="col-sm-5">
-          <div class="form-check form-check-inline" v-for="(game,game_index) in dataGames" :key="game_index">
-            <input class="form-check-input" type="checkbox" :id="'time-'+game_index" name="status" :value="game_index">
-            <label class="form-check-label" :for="'time-'+game_index">{{ game.title }}</label>
+        <div class="col-sm-11">
+          <div class="row">
+            <div class="col-sm-3" v-for="(game,game_index) in dataGames" :key="game_index">
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" :id="'time-'+game_index" name="status" :value="game_index">
+                <label class="form-check-label" :for="'time-'+game_index">{{ game.title }}</label>
+              </div>
+            </div>
           </div>
         </div>
       </div>
