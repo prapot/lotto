@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Formula;
 use App\Models\FormulaValue;
 use Phattarachai\LineNotify\Line;
+use Carbon\Carbon;
 
 class GuideController extends Controller
 {
@@ -78,7 +79,7 @@ class GuideController extends Controller
 
             if($lotto_games){
                 foreach($lotto_games as $slug => $data_game){
-                  $this->lotto($data_game,$slug);
+                    $this->lotto($data_game,$slug);
                 }
             }
 
@@ -270,19 +271,33 @@ class GuideController extends Controller
         $message_value = '';
         $new_line = '';
 
+        $array_game = array_search($game_slug,['stock_china','stock_japan']);
+
         foreach($numbers as $key => $result){
+            $slug = $result['edition_slug'];
+            $round = '';
+
+            if($array_game != -1){
+              $time_check = substr($result['edition_slug'], -2);
+              $now = Carbon::now();
+              if($now->format('A') != $time_check){
+                continue;
+              }
+            }else{
+              $round = substr($slug, strrpos($slug, '|' )+1).' : ';
+            }
+
             if($key != 0){
             $new_line = "\n" ;
             }
 
-            $slug = $result['edition_slug'];
-            $round = substr($slug, strrpos($slug, '|' )+1);
             $dateround = $this->DateThai(strtok($slug, '|'));
             $close_at = date('H:i', strtotime($result['close_at']));
-            $message_value = $message_value.$new_line.$round.' : '.$close_at.' '."\u{1F449}".' '.$result['3upper'].'-'.$result['2under'];
-
+            $message_value = $message_value.$new_line.$round.$close_at.' '."\u{1F449}".' '.$result['3upper'].'-'.$result['2under'];
+            $result_lasted['3upper'] = $result['3upper'];
+            $result_lasted['2under'] = $result['2under'];
         }
-
+        
         $game = config('game')[$game_slug];
 
         $agents = User::where('role','agent')->get();
@@ -297,7 +312,7 @@ class GuideController extends Controller
                         try {
                             $handEmoji = "\u{1f64f}\u{1f64f}\u{1f64f}\u{1f64f}\u{1f64f}";
                             $textLine = "------------------------------------";
-                            $lastHuay = $game['title']."\n"."ล่าสุดรอบที่ ".$round.' '."\u{1F449}".' '.$result['3upper'].'-'.$result['2under'];
+                            $lastHuay = $game['title']."\n"."ล่าสุดรอบที่ ".$round.' '."\u{1F449}".' '.$result_lasted['3upper'].'-'.$result_lasted['2under'];
                             $messageResult = "\n".$handEmoji."\n".$game['title']."\n".'arawanbet - '.$game['title']."\n".$dateround."\n".$handEmoji."\n\n".$message_value."\n\n".$textLine."\n\n".$lastHuay."\n\n".$textLine."\n\n".$dateround;
                             // dd($messageResult);
                             $token = $host->line_token;
