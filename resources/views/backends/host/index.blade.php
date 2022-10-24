@@ -21,7 +21,6 @@
       games="{{ json_encode(config('game')) }}"
     ></host>
   </div>
-
   <div class="card-body">
     <legend class="the-legend">สูตรตัวเลข <small>( หากกรอกผลที่ออกเดียวกัน ระบบจะสุ่มการแสดงผล )</small></legend>
     <formula

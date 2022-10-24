@@ -49,7 +49,6 @@ class GuideController extends Controller
                 }
               }
             }
-
             if(empty($soidowNormal5) && empty($soidowNormal10) && empty($soidowNormal15) && empty($soidowVip5) && empty($lotto_games)){
                 $message = [
                     'status' => 404,
@@ -270,14 +269,12 @@ class GuideController extends Controller
         $numbers = array_reverse($datas);
         $message_value = '';
         $new_line = '';
-
-        $array_game = array_search($game_slug,['stock_china','stock_japan']);
-
+        // $array_game = array_search($game_slug,['stock_china','stock_japan']);
         foreach($numbers as $key => $result){
             $slug = $result['edition_slug'];
             $round = '';
 
-            if($array_game != -1){
+            if($game_slug == 'stock_china' || $game_slug == 'stock_japan'){
               $time_check = substr($result['edition_slug'], -2);
               $now = Carbon::now();
               if($now->format('A') != $time_check){
@@ -297,7 +294,7 @@ class GuideController extends Controller
             $result_lasted['3upper'] = $result['3upper'];
             $result_lasted['2under'] = $result['2under'];
         }
-        
+
         $game = config('game')[$game_slug];
 
         $agents = User::where('role','agent')->get();

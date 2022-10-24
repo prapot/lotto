@@ -97,13 +97,12 @@ export default {
   data () {
     return {
       tempHosts:[],
-      dataGames:[],
+      dataGames:[]
     }
   },
   mounted(){
     this.tempHosts = JSON.parse(this.oldhosts)
     this.dataGames = JSON.parse(this.games)
-    console.log(this.dataGames)
   },
   computed:{
   },
@@ -124,7 +123,7 @@ export default {
         $('#line_token').addClass('border border-danger')
       }
       if(name.length > 0 && line_token.length > 0){
-        this.tempHosts.push({"name":name,"line_token":line_token,"status":status})
+        this.tempHosts.push({"name":name,"line_token":line_token,"status":JSON.stringify(status)})
         $('#name').removeClass('border border-danger')
         $('#line_token').removeClass('border border-danger')
 
