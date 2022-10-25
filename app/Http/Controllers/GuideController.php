@@ -8,6 +8,7 @@ use App\Models\Formula;
 use App\Models\FormulaValue;
 use Phattarachai\LineNotify\Line;
 use Carbon\Carbon;
+use Log;
 
 class GuideController extends Controller
 {
@@ -74,7 +75,6 @@ class GuideController extends Controller
             if($soidowVip5){
                 $this->vip([],$soidowVip5,5);
             }
-
 
             if($lotto_games){
                 foreach($lotto_games as $slug => $data_game){
@@ -271,10 +271,11 @@ class GuideController extends Controller
         $new_line = '';
         // $array_game = array_search($game_slug,['stock_china','stock_japan']);
         foreach($numbers as $key => $result){
+
             $slug = $result['edition_slug'];
             $round = '';
 
-            if($game_slug == 'stock_china' || $game_slug == 'stock_japan'){
+            if($game_slug == 'stock_china' || $game_slug == 'stock_japan' || $game_slug == 'stock_hangseng'){
               $time_check = substr($result['edition_slug'], -2);
               $now = Carbon::now();
               if($now->format('A') != $time_check){
@@ -284,13 +285,13 @@ class GuideController extends Controller
               $round = substr($slug, strrpos($slug, '|' )+1).' : ';
             }
 
-            if($key != 0){
-            $new_line = "\n" ;
-            }
+            // if($key != 0){
+              $new_line = "\n" ;
+            // }
 
             $dateround = $this->DateThai(strtok($slug, '|'));
             $close_at = date('H:i', strtotime($result['close_at']));
-            $message_value = $message_value.$new_line.$round.$close_at.' '."\u{1F449}".' '.$result['3upper'].'-'.$result['2under'];
+            $message_value = $message_value.$new_line.$this->number($result['3upper']).' - '.$this->number($result['2under']);
             $result_lasted['3upper'] = $result['3upper'];
             $result_lasted['2under'] = $result['2under'];
         }
@@ -307,10 +308,25 @@ class GuideController extends Controller
 
                     if($message_value != '' && $checked !== false){
                         try {
-                            $handEmoji = "\u{1f64f}\u{1f64f}\u{1f64f}\u{1f64f}\u{1f64f}";
+                            $flagsEmoji = $game['emoji'];
+                            $fireEmoji = "\u{1f525}\u{1f525}\u{1f525}\u{1f525}";
+                            if($game_slug == 'stock_china' || $game_slug == 'stock_japan' || $game_slug == 'stock_hangseng'){
+                              $now = Carbon::now();
+                              $current_time = 'รอบบ่าย';
+                              if($now->format('A') == 'AM'){
+                                $current_time = 'รอบเช้า';
+                              }
+                              $label = 'ผล'.' '.$flagsEmoji.' '.$game['title'].' '.$current_time.' '.$flagsEmoji."\n\n";
+                            }else{
+                              $label = 'ผล'.' '.$flagsEmoji.' '.$game['title'].' '.$flagsEmoji."\n\n";
+                            }
                             $textLine = "------------------------------------";
-                            $lastHuay = $game['title']."\n"."ล่าสุดรอบที่ ".$round.' '."\u{1F449}".' '.$result_lasted['3upper'].'-'.$result_lasted['2under'];
-                            $messageResult = "\n".$handEmoji."\n".$game['title']."\n".'arawanbet - '.$game['title']."\n".$dateround."\n".$handEmoji."\n\n".$message_value."\n\n".$textLine."\n\n".$lastHuay."\n\n".$textLine."\n\n".$dateround;
+                            $messageResult = "\n".$fireEmoji.' '."รายงานหวย ARAWANBET".' '.$fireEmoji."\n\n".
+                                $label.
+                                'ประจำวันที่ '.$dateround."\n\n".
+                                $textLine."\n".
+                                'เลขที่ออก'.
+                                $message_value."\n\n".$textLine."\n".$fireEmoji.' '.'Arawanbet.com'.' '.$fireEmoji;
                             // dd($messageResult);
                             $token = $host->line_token;
                             $line = new Line($token);
@@ -446,5 +462,15 @@ class GuideController extends Controller
                 }
             }
         }
+    }
+
+    function number($number){
+      $numbers = str_split($number);
+
+      $emoji_number = [];
+      foreach($numbers as $emoji){
+        $emoji_number[] = config('number')[$emoji];
+      }
+      return implode($emoji_number);
     }
 }
