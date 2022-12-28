@@ -2,14 +2,14 @@
   <div class="mb-3">
     <button v-if="close_input == 'false'" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalformula">
       เพิ่มสูตร
-    </button>    
+    </button>
     <div class="row mt-3">
         <div class="col-sm-6" v-for="(formula, index) in formulaDatas" :key="index">
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">{{formula.title}}</h5>
               <p class="card-text">สูตร : <span v-if="formula.type == 3">สามตัวบน</span><span v-if="formula.type == 2">สองตัวล่าง</span></p>
-              <p class="card-text">เลขที่ออกล่าสุด : 
+              <p class="card-text">เลขที่ออกล่าสุด :
                 <span v-for="(dataValue , data_index ) in formula.values" :key="data_index">
                 {{dataValue.value}}
                 <span v-if="data_index != Object.keys(formula.values).length - 1">, </span>
@@ -102,7 +102,7 @@
                     <option value="8">8</option>
                     <option value="9">9</option>
                     <option value="10">10</option>
-                    
+
                   </select>
                 </div>
               </div>
@@ -156,7 +156,7 @@
                 </div>
                 </div>
               </div>
-    
+
             </form>
           </div>
           <div class="modal-footer">
@@ -169,7 +169,7 @@
 
   </div>
 </template>
- 
+
 <script>
 import EmojiPicker from 'vue-emoji-picker'
 
@@ -193,7 +193,7 @@ export default {
         result:'',
         formulaDatas:[],
         search: ''
-      
+
     }
   },
   components: {
@@ -209,13 +209,13 @@ export default {
       append(emoji) {
         this.result += emoji
       },
-      directives: {
-        focus: {
-          inserted(el) {
-            el.focus()
-          },
-        },
-      },
+      // directives: {
+      //   focus: {
+      //     inserted(el) {
+      //       el.focus()
+      //     },
+      //   },
+      // },
       addValue() {
         this.values.push({ value: '' });
       },
@@ -363,5 +363,4 @@ export default {
       },
   }
 }
-</script> 
- 
+</script>

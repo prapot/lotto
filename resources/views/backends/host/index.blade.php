@@ -18,11 +18,11 @@
     <host
       oldhosts="{{ json_encode($hosts) }}"
       close_input="false"
+      games="{{ json_encode(config('game')) }}"
     ></host>
   </div>
-
   <div class="card-body">
-    <legend class="the-legend">สูตรตัวเลข <small>( หากกรอกผลที่ออกเดียวกัน ระบบจะสุ่มการแสดงผล )</small></legend> 
+    <legend class="the-legend">สูตรตัวเลข <small>( หากกรอกผลที่ออกเดียวกัน ระบบจะสุ่มการแสดงผล )</small></legend>
     <formula
       oldformulas="{{ json_encode($formulas) }}"
       close_input="false"

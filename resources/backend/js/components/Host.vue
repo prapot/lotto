@@ -20,6 +20,15 @@
                   <input class="form-check-input" type="checkbox" :id="'status-time-15-'+index" :name="'status-'+host.id" :checked="toChecked(host.status,'15')" value="15" @click="updateStatus(host.id)">
                   <label class="form-check-label" :for="'status-time-15-'+index">15 นาที</label>
                 </div>
+                <p class="card-text mt-3">game : </p>
+                <div class="row">
+                  <div class="col-md-3" v-for="(game,game_index) in dataGames" :key="game_index">
+                    <div class="form-check form-check-inline" >
+                      <input class="form-check-input" type="checkbox" :id="'status-'+game_index+'-'+index" :name="'status-'+host.id" :checked="toChecked(host.status,game_index)" :value="game_index" @click="updateStatus(host.id)">
+                      <label class="form-check-label" :for="'status-'+game_index+'-'+index">{{ game.title }}</label>
+                    </div>
+                  </div>
+                </div>
                 <img v-if="close_input == 'false'" src="/images/remove.png" width="20" class="position-absolute pointer" style="top: 10px;right: 10px;" @click="beforeRemove(index)">
               </div>
             </div>
@@ -58,6 +67,21 @@
         </div>
       </div>
 
+
+      <div class="form-group row" v-if="close_input == 'false'">
+        <div class="col-sm-1">เกม</div>
+        <div class="col-sm-11">
+          <div class="row">
+            <div class="col-sm-3" v-for="(game,game_index) in dataGames" :key="game_index">
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" :id="'time-'+game_index" name="status" :value="game_index">
+                <label class="form-check-label" :for="'time-'+game_index">{{ game.title }}</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="form-group row" v-if="close_input == 'false'">
         <div class="col-sm-10">
             <button class="btn btn-outline-primary" type="button" @click="addHost()">เพิ่มห้อง</button>
@@ -69,14 +93,16 @@
 
 <script>
 export default {
-  props:['oldhosts','close_input'],
+  props:['oldhosts','close_input','games'],
   data () {
     return {
-      tempHosts:[]
+      tempHosts:[],
+      dataGames:[]
     }
   },
   mounted(){
     this.tempHosts = JSON.parse(this.oldhosts)
+    this.dataGames = JSON.parse(this.games)
   },
   computed:{
   },
@@ -97,7 +123,7 @@ export default {
         $('#line_token').addClass('border border-danger')
       }
       if(name.length > 0 && line_token.length > 0){
-        this.tempHosts.push({"name":name,"line_token":line_token,"status":status})
+        this.tempHosts.push({"name":name,"line_token":line_token,"status":JSON.stringify(status)})
         $('#name').removeClass('border border-danger')
         $('#line_token').removeClass('border border-danger')
 
